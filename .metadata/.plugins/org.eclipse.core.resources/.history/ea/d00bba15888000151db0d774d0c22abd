@@ -1,0 +1,17 @@
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public class Apartamento {
+	private int numero;
+	private ArrayList<Cota> cotas;
+	private ArrayList<Processo> processos;
+	
+	
+	public void addCota(double valOriginal, double valPago, Calendar dataVencimento, Calendar dataPagamento, String obs){
+		lista.add(new Cota(valOriginal, valPago, dataVencimento, dataPagamento, obs));
+	}
+	
+	public void delCota(int lin){
+		lista.remove(lin);
+	}
+}

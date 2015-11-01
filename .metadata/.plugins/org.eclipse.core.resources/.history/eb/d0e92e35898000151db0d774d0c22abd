@@ -1,0 +1,49 @@
+import java.util.ArrayList;
+import java.util.Calendar;
+
+
+public class Apartamento {
+	private int numero;
+	private ArrayList<Cota> cotas;
+	private ArrayList<Acordo> acordos;
+	private ArrayList<Processo> processos;
+
+	public Apartamento(int numero){
+		this.numero = numero; cotas = new ArrayList<Cota>(); processos = new ArrayList<Processo>();
+	}	
+	
+	/******************************COTAS*****************************************************/
+
+	public void addCota(double valOriginal, double valPago, Calendar dataVencimento, Calendar dataPagamento, String obs){
+		cotas.add(new Cota(valOriginal, valPago, dataVencimento, dataPagamento, obs));
+	}
+
+	public void delCota(int lin){
+		cotas.remove(lin);
+	}	
+	
+	/******************************ACORDOS****************************************************/
+	
+	public void addAcordo(String devedor, String formaAtualizacao, Calendar dataAssinatura, Calendar inicio,
+			Calendar fim, double valorTotal, double valorParcela, int numParcelas){
+		Acordo acordo = new Acordo(devedor,formaAtualizacao,dataAssinatura,inicio,fim,valorTotal,valorParcela,numParcelas);
+		acordos.add(acordo);
+	}
+
+	public void addItemTabela(int numAcordo,String parcela, double valO, double valP, Calendar vencO, Calendar dataP){
+		acordos.get(numAcordo).addItemTabela(parcela, valO, valP, vencO, dataP);
+	}
+
+	public void addItemDebitos(int numAcordo,Calendar c){
+		acordos.get(numAcordo).addItemDebitos(c);
+	}
+	
+	/******************************PROCESSOS****************************************************/
+	public void addProcesso(String reu, String especie, int numProcesso, double valorAjuizado, Calendar dataAjuizamento,
+			Calendar periodo, Calendar ultMov){
+		Processo p = new Processo(reu, especie, numProcesso, valorAjuizado, dataAjuizamento, periodo, ultMov);
+		processos.add(p);
+	}
+	
+	
+}

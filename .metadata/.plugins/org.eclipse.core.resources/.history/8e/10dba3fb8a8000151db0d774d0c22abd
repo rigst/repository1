@@ -1,0 +1,6 @@
+
+public class Bloco {
+	private String nome;
+	
+	
+}
