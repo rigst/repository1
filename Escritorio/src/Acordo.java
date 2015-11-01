@@ -2,18 +2,19 @@ import java.util.ArrayList;
 
 public class Acordo {
 		private String devedor, formaAtualizacao;
+		private String processo;
 		private Data dataAssinatura, inicio, fim;
 		private double valorTotal, valorParcela;
 		private int numParcelas;
-		private ArrayList<String> debitosInclusos;
+		private ArrayList<Data> debitosInclusos;
 		private ArrayList<Item> tabela;
 		
 		class Item{
 			private String parcela;
 			private double valorOriginal, valorPago;
-			private String vencimentoOriginal, dataPagamento;
+			private Data vencimentoOriginal, dataPagamento;
 			
-			public Item(String parc, double valO, double valP, String vencO, String dataP){
+			public Item(String parc, double valO, double valP, Data vencO, Data dataP){
 				parcela = parc; valorOriginal = valO; valorPago = valP; vencimentoOriginal = vencO; dataPagamento = dataP;
 			}
 			public String toString(){
@@ -22,20 +23,21 @@ public class Acordo {
 			}
 		}
 		
-		public Acordo(String devedor, String formaAtualizacao, Data dataAssinatura, Data inicio,
+		public Acordo(String devedor, String processo, String formaAtualizacao, Data dataAssinatura, Data inicio,
 				Data fim, double valorTotal, double valorParcela, int numParcelas){
+			this.processo = processo;
 			this.devedor = devedor; this.formaAtualizacao = formaAtualizacao; this.dataAssinatura = dataAssinatura;
 			this.inicio = inicio; this.fim = fim; this.valorTotal = valorTotal; this.valorParcela = valorParcela;
 			this.numParcelas = numParcelas;
-			debitosInclusos = null; //chamar funcao para criar debitos
-			tabela = null; //chamar funcao para criar tabela
+			debitosInclusos = new ArrayList<Data>(); //chamar funcao para criar debitos
+			tabela = new ArrayList<Item>(); //chamar funcao para criar tabela
 		}
 		
-		public void addItemTabela(String parcela, double valO, double valP, String vencO, String dataP){
+		public void addItemTabela(String parcela, double valO, double valP, Data vencO, Data dataP){
 			tabela.add(new Item(parcela,valO,valP,vencO,dataP));
 		}
 						
-		public void addItemDebitos(String d){
+		public void addItemDebitos(Data d){
 			debitosInclusos.add(d);
 		}
 		
@@ -43,16 +45,16 @@ public class Acordo {
 		
 		
 		public String toString(){
-			String msg = "ACORDO:\nDevedor : " + devedor + "\nForma Atualização : " + formaAtualizacao +
+			String msg = "ACORDO:\nProcesso " + processo + "\nDevedor : " + devedor + "\nForma Atualização : " + formaAtualizacao +
 					"\nData Assinatura : " + dataAssinatura + "\nInicio : " + inicio + "\nFim : " + fim +
 					"\nValor Total : " + valorTotal + "\nValor Parcela : " + valorParcela +
-					"Número Parcelas : " + numParcelas + "\nDebitos Inclusos :\n";
+					"\nNúmero Parcelas : " + numParcelas + "\nDebitos Inclusos :\n";
 			for(int i=0; i<debitosInclusos.size(); i++){
-				msg += "Debito : " + debitosInclusos.get(i);
+				msg += "Debito : " + debitosInclusos.get(i) + "\t";
 			}
-			msg += "Tabela : \n";
+			msg += "\nTabela : \n";
 			for(int i=0; i<tabela.size(); i++){
-				msg += "Item : " + tabela.get(i);
+				msg += "Item : " + tabela.get(i) + "\n";
 			}
 			return msg;
 		}

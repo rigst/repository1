@@ -8,7 +8,8 @@ public class Apartamento{
 	private ArrayList<Processo> processos;
 
 	public Apartamento(int numero){
-		nome = " "; this.box = -1; this.numero = numero; cotas = new ArrayList<Cota>(); processos = new ArrayList<Processo>();
+		nome = " "; this.box = -1; this.numero = numero; 
+		cotas = new ArrayList<Cota>(); acordos = new ArrayList<Acordo>(); processos = new ArrayList<Processo>();
 	}	
 	
 	public int getNumero() { return numero; }
@@ -42,18 +43,7 @@ public class Apartamento{
 	}	
 	
 	/******************************ACORDOS****************************************************/
-	
-	public void addAcordo(String devedor, String formaAtualizacao, Data dataAssinatura, Data inicio,
-			Data fim, double valorTotal, double valorParcela, int numParcelas){
-		int pos = 0;
-		for(Acordo aux : acordos){
-			if(aux.getDataAssinatura().after(dataAssinatura)) break;
-			pos++;
-		}
-		Acordo acordo = new Acordo(devedor,formaAtualizacao,dataAssinatura,inicio,fim,valorTotal,valorParcela,numParcelas);
-		acordos.add(pos, acordo);
-	}
-	
+		
 	public void addAcordo(Acordo acordo){
 		int pos = 0;
 		for(Acordo aux : acordos){
@@ -64,11 +54,11 @@ public class Apartamento{
 	}
 
 
-	public void addItemTabela(int numAcordo,String parcela, double valO, double valP, String vencO, String dataP){
+	public void addItemTabela(int numAcordo,String parcela, double valO, double valP, Data vencO, Data dataP){
 		acordos.get(numAcordo).addItemTabela(parcela, valO, valP, vencO, dataP);
 	}
 
-	public void addItemDebitos(int numAcordo,String c){
+	public void addItemDebitos(int numAcordo,Data c){
 		acordos.get(numAcordo).addItemDebitos(c);
 	}
 	
@@ -96,8 +86,8 @@ public class Apartamento{
 	
 	
 	public String toString(){
-		if(box != -1) return "Apartamento " + numero + " - Box " + box + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas + "\nPROCESSOS :\n" + processos;
-		else return "Apartamento " + numero + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas + "\nPROCESSOS :\n" + processos;
+		if(box != -1) return "Apartamento " + numero + " - Box " + box + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas  +  "\nACORDOS :\n" + acordos + "\nPROCESSOS :\n" + processos;
+		else return "Apartamento " + numero + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas +  "\nACORDOS :\n" + acordos + "\nPROCESSOS :\n" + processos;
 		
 	}
 
