@@ -17,6 +17,15 @@ public class Bloco {
 		apartamentos.add(pos, new Apartamento(num));
 	}
 	
+	public void addApartamento(Apartamento apartamento){
+		int pos = 0;
+		for(Apartamento ap : apartamentos){
+			if(ap.getNumero() > apartamento.getNumero()) break;
+			pos++;
+		}
+		apartamentos.add(pos, apartamento);
+	}
+	
 	public Apartamento getApartamento(int numAp){
 		for(Apartamento aux : apartamentos ){
 			if(aux.getNumero() == numAp) return aux;

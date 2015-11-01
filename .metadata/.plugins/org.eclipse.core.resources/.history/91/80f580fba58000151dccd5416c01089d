@@ -1,0 +1,18 @@
+public class Cota{
+	public String nome;
+	public double valPago;
+	public String dataVencimento, dataPagamento;
+	public String obs;
+	
+	public Cota(String nome, double valO, double valP,String dVenc,String dPag, String obs){
+		this.nome = nome; valPago = valP; dataVencimento = dVenc; dataPagamento = dPag; this.obs = obs;
+	}
+	
+	public  String getDataVencimento() { return dataVencimento; }
+	
+	public String toString(){
+		return "\tData Vencimento" + dataVencimento + 
+				"\tValor Pago : " + valPago + "\tData Pagamento : " + dataPagamento +
+					"Observação : " + obs;
+	}
+}

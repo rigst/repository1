@@ -1,20 +1,19 @@
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Acordo {
 		private String devedor, formaAtualizacao;
-		private Calendar dataAssinatura, inicio, fim;
+		private Data dataAssinatura, inicio, fim;
 		private double valorTotal, valorParcela;
 		private int numParcelas;
-		private ArrayList<Calendar> debitosInclusos;
+		private ArrayList<String> debitosInclusos;
 		private ArrayList<Item> tabela;
 		
 		class Item{
 			private String parcela;
 			private double valorOriginal, valorPago;
-			private Calendar vencimentoOriginal, dataPagamento;
+			private String vencimentoOriginal, dataPagamento;
 			
-			public Item(String parc, double valO, double valP, Calendar vencO, Calendar dataP){
+			public Item(String parc, double valO, double valP, String vencO, String dataP){
 				parcela = parc; valorOriginal = valO; valorPago = valP; vencimentoOriginal = vencO; dataPagamento = dataP;
 			}
 			public String toString(){
@@ -23,8 +22,8 @@ public class Acordo {
 			}
 		}
 		
-		public Acordo(String devedor, String formaAtualizacao, Calendar dataAssinatura, Calendar inicio,
-						Calendar fim, double valorTotal, double valorParcela, int numParcelas){
+		public Acordo(String devedor, String formaAtualizacao, Data dataAssinatura, Data inicio,
+				Data fim, double valorTotal, double valorParcela, int numParcelas){
 			this.devedor = devedor; this.formaAtualizacao = formaAtualizacao; this.dataAssinatura = dataAssinatura;
 			this.inicio = inicio; this.fim = fim; this.valorTotal = valorTotal; this.valorParcela = valorParcela;
 			this.numParcelas = numParcelas;
@@ -32,15 +31,15 @@ public class Acordo {
 			tabela = null; //chamar funcao para criar tabela
 		}
 		
-		public void addItemTabela(String parcela, double valO, double valP, Calendar vencO, Calendar dataP){
+		public void addItemTabela(String parcela, double valO, double valP, String vencO, String dataP){
 			tabela.add(new Item(parcela,valO,valP,vencO,dataP));
 		}
 						
-		public void addItemDebitos(Calendar d){
+		public void addItemDebitos(String d){
 			debitosInclusos.add(d);
 		}
 		
-		public Calendar getDataAssinatura(){ return dataAssinatura; }
+		public Data getDataAssinatura(){ return dataAssinatura; }
 		
 		
 		public String toString(){

@@ -1,16 +1,15 @@
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Processo{
 	private String reu, especie;
 	private int numProcesso;
 	private double valorAjuizado;
-	private Calendar dataAjuizamento, periodo, ultMov;
+	private Data dataAjuizamento, periodo, ultMov;
 	private ArrayList<String[]> ajuizado;
 	private ArrayList<String[]> custas;
 
-	public Processo(String reu, String especie, int numProcesso, double valorAjuizado, Calendar dataAjuizamento,
-			Calendar periodo, Calendar ultMov){
+	public Processo(String reu, String especie, int numProcesso, double valorAjuizado, Data dataAjuizamento,
+			Data periodo, Data ultMov){
 		this.reu = reu; this.especie = especie; this.numProcesso = numProcesso; this.valorAjuizado = valorAjuizado;
 		this.dataAjuizamento = dataAjuizamento; this.periodo = periodo; this.ultMov = ultMov;
 		ajuizado = null; //chamar metodo

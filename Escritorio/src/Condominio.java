@@ -17,6 +17,15 @@ public class Condominio {
 		blocos.add(pos, new Bloco(numero));
 	}
 	
+	public void addBloco(Bloco bloco){
+		int pos = 0;
+		for(Bloco aux : blocos){
+			if(aux.getNumero() > bloco.getNumero()) break;
+			pos++;
+		}
+		blocos.add(pos, bloco);
+	}
+	
 	public Bloco getBloco(int numero){
 		for(Bloco aux : blocos){
 			if(aux.getNumero() == numero) return aux;

@@ -1,0 +1,18 @@
+
+public class Data {
+	private int dia, mes, ano;
+	
+	public Data(String dataStr){
+		String[] data = dataStr.split("/");
+		dia = Integer.parseInt(data[0]);
+		mes = Integer.parseInt(data[1]);
+		ano = Integer.parseInt(data[2]);
+	}
+	
+	public int getDia() { return dia; }
+	public int getMes() { return mes; }
+	public int getAno() { return ano; }
+	
+	public String toString() { return dia + "/" + mes + "/" + ano;}
+	
+}

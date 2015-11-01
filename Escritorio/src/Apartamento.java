@@ -1,28 +1,40 @@
 import java.util.ArrayList;
-import java.util.Calendar;
-
 
 public class Apartamento{
-	private int numero;
+	private String nome;
+	private int numero, box;
 	private ArrayList<Cota> cotas;
 	private ArrayList<Acordo> acordos;
 	private ArrayList<Processo> processos;
 
 	public Apartamento(int numero){
-		this.numero = numero; cotas = new ArrayList<Cota>(); processos = new ArrayList<Processo>();
+		nome = " "; this.box = -1; this.numero = numero; cotas = new ArrayList<Cota>(); processos = new ArrayList<Processo>();
 	}	
 	
 	public int getNumero() { return numero; }
 	
+	public void setNome(String nome) { this.nome = nome; }
+	
+	public void setBox(int box) { this.box = box; }
+	
 	/******************************COTAS*****************************************************/
 
-	public void addCota(double valOriginal, double valPago, Calendar dataVencimento, Calendar dataPagamento, String obs){
+	public void addCota(String nome, double valOriginal, double valPago, Data dataVencimento, Data dataPagamento, String obs){
 		int pos = 0;
 		for(Cota aux : cotas){
 			if(aux.getDataVencimento().after(dataVencimento)) break;
 			pos++;
 		}
-		cotas.add(pos,new Cota(valOriginal, valPago, dataVencimento, dataPagamento, obs));
+		cotas.add(pos,new Cota( valPago, dataVencimento, dataPagamento, obs));
+	}
+	
+	public void addCota(Cota cota){
+		int pos = 0;
+		for(Cota aux : cotas){
+			if(aux.getDataVencimento().after(cota.getDataVencimento())) break;
+			pos++;
+		}
+		cotas.add(pos,cota);
 	}
 
 	public void delCota(int lin){
@@ -31,8 +43,8 @@ public class Apartamento{
 	
 	/******************************ACORDOS****************************************************/
 	
-	public void addAcordo(String devedor, String formaAtualizacao, Calendar dataAssinatura, Calendar inicio,
-			Calendar fim, double valorTotal, double valorParcela, int numParcelas){
+	public void addAcordo(String devedor, String formaAtualizacao, Data dataAssinatura, Data inicio,
+			Data fim, double valorTotal, double valorParcela, int numParcelas){
 		int pos = 0;
 		for(Acordo aux : acordos){
 			if(aux.getDataAssinatura().after(dataAssinatura)) break;
@@ -41,18 +53,28 @@ public class Apartamento{
 		Acordo acordo = new Acordo(devedor,formaAtualizacao,dataAssinatura,inicio,fim,valorTotal,valorParcela,numParcelas);
 		acordos.add(pos, acordo);
 	}
+	
+	public void addAcordo(Acordo acordo){
+		int pos = 0;
+		for(Acordo aux : acordos){
+			if(aux.getDataAssinatura().after(acordo.getDataAssinatura())) break;
+			pos++;
+		}
+		acordos.add(pos, acordo);
+	}
 
-	public void addItemTabela(int numAcordo,String parcela, double valO, double valP, Calendar vencO, Calendar dataP){
+
+	public void addItemTabela(int numAcordo,String parcela, double valO, double valP, String vencO, String dataP){
 		acordos.get(numAcordo).addItemTabela(parcela, valO, valP, vencO, dataP);
 	}
 
-	public void addItemDebitos(int numAcordo,Calendar c){
+	public void addItemDebitos(int numAcordo,String c){
 		acordos.get(numAcordo).addItemDebitos(c);
 	}
 	
 	/******************************PROCESSOS****************************************************/
-	public void addProcesso(String reu, String especie, int numProcesso, double valorAjuizado, Calendar dataAjuizamento,
-			Calendar periodo, Calendar ultMov){
+	public void addProcesso(String reu, String especie, int numProcesso, double valorAjuizado, Data dataAjuizamento,
+			Data periodo, Data ultMov){
 		int pos = 0;
 		for(Processo aux : processos){
 			if(aux.getNumProcesso() > numProcesso) break;
@@ -74,7 +96,9 @@ public class Apartamento{
 	
 	
 	public String toString(){
-		return "Apartamento " + numero + " :\n" + "COTAS :\n" + cotas + "\nPROCESSOS :\n" + processos;
+		if(box != -1) return "Apartamento " + numero + " - Box " + box + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas + "\nPROCESSOS :\n" + processos;
+		else return "Apartamento " + numero + " :\n" + "NOME : " + nome + "\nCOTAS :\n" + cotas + "\nPROCESSOS :\n" + processos;
+		
 	}
 
 	
