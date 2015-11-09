@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 RELAÇÃO DE PROCESSOS – ATUALIZADA ATÉ 03/08/2015
 
 Bloco: 01                                                                            	                          AUDIÊNCIA: 12/08/2015 – 14.40H	
@@ -44,3 +45,51 @@ Período Ajuizado: JUN/11 A SET/11; ABR/12 A DEZ/12; JAN/13 A DEZ/13; JAN/14 A DE
 Valor: R$ 15.304,05
 Último Movimento: 	
 Custas:
+=======
+RELAÇÃO DE PROCESSOS – ATUALIZADA ATÉ 03/08/2015
+
+Bloco: 01                                                                            	                          AUDIÊNCIA: 12/08/2015 – 14.40H	
+Apartamento: 304
+Processo nº: 001/1.15.0108700-3
+Réu: MARIA EUNICE LOPES SEUS
+Espécie: COBRANÇA
+Data de Ajuizamento:  03/07/2015
+Período Ajuizado: NOV/2011, AGO/2012, JAN/2013, MAR/2013, JUL/2013, SET/13, JAN/14, FEV/14, MAR/14, ABR/14, MAI/14, JUN/14, JUL/14, SET/14, OUT/14, NOV/14, DEZ/14, JAN/15, FEV/15, MAR/15, ABR/15 E MAI/15.
+Valor: R$ 7.464,65
+Último Movimento: 28/07/2015 – AGUARDANDO AUDIÊNCIA
+Custas:
+03/07/2015 – R$ 247,48 
+
+Bloco: 01
+Apartamento: 403
+Processo nº: 001/1.14.0258083-6
+Réu: NARA TEREZINHA DA SILVA LAGO E OUTROS
+Espécie: COBRANÇA
+Data de Ajuizamento: 24/09/2014
+Período Ajuizado: 
+Valor: R$ 2.164,00
+Último Movimento: 28/07/2015 – EXPEDIDO MANDADO	
+Custas:
+23/09/2014 –R$ 296,08
+12/02/2015 – R$ 56,82
+09/02/2015 – R$ 57,96
+19/06/2015 – R$ 60,78
+
+
+
+
+
+
+
+
+Bloco: 01									AGUARDANDO AJUIZAMENTO
+Apartamento: 405
+Processo nº: 
+Réu: CÁTIA NASCENTE CUNHA
+Espécie: 
+Data de Ajuizamento:  
+Período Ajuizado: JUN/11 A SET/11; ABR/12 A DEZ/12; JAN/13 A DEZ/13; JAN/14 A DEZ/14; JAN/15 A JUN/15
+Valor: R$ 15.304,05
+Último Movimento: 	
+Custas:
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

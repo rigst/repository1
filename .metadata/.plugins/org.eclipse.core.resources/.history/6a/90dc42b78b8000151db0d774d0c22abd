@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,3 +21,27 @@ public class Bloco {
 	
 	
 }
+=======
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Bloco {
+	private int numero;
+	private ArrayList<Apartamento> apartamentos;
+	
+	public Bloco(int numero){
+		this.numero = numero; apartamentos = new ArrayList<Apartamento>();
+	}
+	
+	public void addApartamento(int num){
+		apartamentos.add(new Apartamento(num));
+		Arrays.sort(apartamentos);
+	}
+	
+	public Apartamento getApartamento(int numAp){
+		return apartamentos.get
+	}
+	
+	
+}
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

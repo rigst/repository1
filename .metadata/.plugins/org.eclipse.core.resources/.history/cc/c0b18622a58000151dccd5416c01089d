@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.util.Calendar;
 
 public class Cota{
@@ -18,3 +19,25 @@ public class Cota{
 					"Observação : " + obs;
 	}
 }
+=======
+import java.util.Calendar;
+
+public class Cota{
+	public String nome;
+	public double valPago;
+	public Calendar dataVencimento, dataPagamento;
+	public String obs;
+	
+	public Cota(String nome, double valO, double valP, Calendar dVenc, Calendar dPag, String obs){
+		this.nome = nome; valPago = valP; dataVencimento = dVenc; dataPagamento = dPag; this.obs = obs;
+	}
+	
+	public  Calendar getDataVencimento() { return dataVencimento; }
+	
+	public String toString(){
+		return "\tData Vencimento" + dataVencimento + 
+				"\tValor Pago : " + valPago + "\tData Pagamento : " + dataPagamento +
+					"Observação : " + obs;
+	}
+}
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

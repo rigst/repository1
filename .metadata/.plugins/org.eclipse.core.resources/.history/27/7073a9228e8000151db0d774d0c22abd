@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import java.util.ArrayList;
 
 public class Condominio {
@@ -17,3 +18,24 @@ public class Condominio {
 		blocos.add(pos, new Bloco(numero));
 	}
 }
+=======
+import java.util.ArrayList;
+
+public class Condominio {
+	private String nome;
+	private ArrayList<Bloco> blocos;
+	
+	public Condominio(String nome){
+		this.nome = nome; blocos = new ArrayList<Bloco>();
+	}
+	
+	public void addBloco(int numero){
+		int pos = 0;
+		for(Bloco aux : blocos){
+			if(aux.getNumero() > numero) break;
+			pos++;
+		}
+		blocos.add(pos, new Bloco(numero));
+	}
+}
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

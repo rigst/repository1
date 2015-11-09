@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="RefactoringWizard.preview">
@@ -5,3 +6,12 @@
 		<item value="400" key="height"/>
 	</section>
 </section>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="RefactoringWizard.preview">
+		<item value="600" key="width"/>
+		<item value="400" key="height"/>
+	</section>
+</section>
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

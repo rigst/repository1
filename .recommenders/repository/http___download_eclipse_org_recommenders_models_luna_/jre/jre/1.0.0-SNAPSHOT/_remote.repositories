@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 #NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
 #Sun Nov 01 09:03:04 BRST 2015
 jre-1.0.0-20140604.182326-1-call.zip>models=
+=======
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Sun Nov 01 09:03:04 BRST 2015
+jre-1.0.0-20140604.182326-1-call.zip>models=
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 
 public class Apartamento {
 	private int numero;
 	private 
 }
+=======
+
+public class Apartamento {
+	private int numero;
+	private 
+}
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3

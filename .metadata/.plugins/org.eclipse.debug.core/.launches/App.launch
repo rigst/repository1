@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
@@ -9,3 +10,16 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="App"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Escritorio"/>
 </launchConfiguration>
+=======
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Escritorio/src/App.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="App"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Escritorio"/>
+</launchConfiguration>
+>>>>>>> a0ca4709d77332945fda62ec1a46734c67911ac3
