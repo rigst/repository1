@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*************************LISTAS****************************/
 typedef struct Temp{
@@ -10,10 +11,10 @@ typedef struct Temp{
 TNODO *ListaDePalavras = NULL;
 TNODO *TextoComoListaDePalavras = NULL;
 
-//insere no final da lista, recebe palavra e lista
+
 TNODO *Insere(char *palavra, TNODO *inicio) {
-    TNODO *p;
-    p = malloc(sizeof (TNODO));
+    TNODO *p = NULL;
+    p = (TNODO*) malloc(sizeof (TNODO));
     p -> pal = palavra;
     if (inicio == NULL) {
         p -> prox = NULL;
@@ -27,34 +28,27 @@ TNODO *Insere(char *palavra, TNODO *inicio) {
     return inicio;
 }
 
-//recebe a lista e o dado, retorna uma referencia
 TNODO *BuscaDado(TNODO *inicio, char *dado)
 {
-    TNODO *ptr;
-  if (inicio == NULL)
-  {
-    return NULL;
-  }
+    TNODO *ptr = NULL;
   ptr = inicio;
-  while (ptr !=NULL) {
-     if (ptr->pal == dado)
+  while (ptr != NULL) {
+     if (strcmp(ptr->pal, dado)==0)
             return (ptr);
      else ptr = ptr->prox;
   }
   return NULL;
 }
 
-//recebe a lista e o dado, diz se existe
 int ExisteDado(TNODO *inicio, char *dado)
 {
   if(BuscaDado(inicio,dado) != NULL) return 1;
   return 0;
 }
 
-//recebe a lista
 void Imprime(TNODO *inicio)
 {
-    TNODO *ptr;
+    TNODO *ptr = NULL;
   if (inicio == NULL)
   {
     printf("--- fim da lista ---\n\n");
@@ -62,7 +56,7 @@ void Imprime(TNODO *inicio)
   }
   ptr = inicio;
   while (ptr !=NULL) {
-     printf("Palavra = %s\n",ptr->pal);
+     printf("Palavra Lista = %s\n",ptr->pal);
      ptr = ptr->prox;
   }
   printf("--- fim da lista ---\n\n");
@@ -71,19 +65,34 @@ void Imprime(TNODO *inicio)
 /*************************ARQUIVOS****************************/
 void LeArquivoTexto(TNODO *inicio)
 {
-    FILE *arq;
+    FILE *arq = NULL;
     arq = fopen("entrada.txt", "rt");
     if (arq == NULL){ perror("Error"); return; }
 
-    int i, result;
-    char c;
-   float x;
+    int result = 0;
+    char c = ' ';
+    char *s = NULL;
+
    while(result != EOF)
    {
-    result = fscanf(arq, "%c", &c);
-    printf("_%c",c);
+        result = fscanf(arq, "%c", &c);
+        printf("_%c_",c);
+
+        if(c == ' ' || c == '\n'){
+            printf("PALAVRA: %s\n", s);
+            if(!ExisteDado(ListaDePalavras,s)) ListaDePalavras = Insere(s,ListaDePalavras);
+            Imprime(ListaDePalavras);
+            s = NULL;
+        }else if(isalnum(c)){
+            if(s == NULL) {
+                    s = (char*) malloc (sizeof(char));
+                    s[0] = c;
+            }
+            else strcat(s,&c);
+        }
    }
-   printf("----acabou-----");
+
+    printf("----acabou-----");
     fclose(arq);
 }
 /*
@@ -113,7 +122,18 @@ void LeArquivoBinario(TNODO *inicio)
 int main()
 {
     printf("Hello world!\n");
-    LeArquivoTexto(ListaDePalavras);
+
+
+    char *S = "ABCD";
+    ListaDePalavras = Insere(S,ListaDePalavras);
+    S = "19283";
+    ListaDePalavras = Insere(S,ListaDePalavras);
+    S = "iosduroew";
+    ListaDePalavras = Insere(S,ListaDePalavras);
+    Imprime(ListaDePalavras);
+
+   LeArquivoTexto(ListaDePalavras);
+
     /*char *S = "ABCD";
     ListaDePalavras = Insere(S,ListaDePalavras);
     Imprime(ListaDePalavras);
