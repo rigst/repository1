@@ -1,29 +1,37 @@
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.util.Random;
 
-public class Tabuleiro {
+import javax.swing.Scrollable;
+
+public class Tabuleiro{
 	public Personagem[][] tab;
+	public int tam;
 	public int numJogada;
 	public int numHumanos, numZumbis;
 	
 	public static Tabuleiro tabuleiro = null; 
 	
 	private Tabuleiro(){
-		tab = new Personagem[5][5];
+		tam = 10;
+		tab = new Personagem[tam][tam];
 		numHumanos = 0; numZumbis = 0;
+		gravaArquivo("inicio.txt");
 	}
 	
 	public void setNumHumanos(int n) { numHumanos = n; }
-	public void setNumZumbis(int n) { numZumbis = n; }
+	public void setNumZumbis(int n) { numZumbis = n;}
 	
 	public void setTabuleiro(Personagem[][] mat){
 		tab = mat;
+		gravaArquivo("inicio.txt");
 	}
 	
 	public void setTabuleiro(int numHumanos, int numZumbis){
@@ -40,16 +48,16 @@ public class Tabuleiro {
 		//HUMANOS
 		for(int i=0; i<numHumanos; i++){
 			do{
-				x = Math.abs(r.nextInt()) % 5;
-				y = Math.abs(r.nextInt()) % 5;
+				x = Math.abs(r.nextInt()) % tam;
+				y = Math.abs(r.nextInt()) % tam;
 				if(!ocupado(x,y)) { tab[x][y] = new Humano(x,y); break;}
 			}while(ocupado(x,y));
 		}
 		
 		//ZUMBIS
 		for(int i=0; i<numZumbis; i++){
-			do{	x = Math.abs(r.nextInt()) % 5;
-			y = Math.abs(r.nextInt()) % 5;
+			do{	x = Math.abs(r.nextInt()) % tam;
+			y = Math.abs(r.nextInt()) % tam;
 			if(!ocupado(x,y)) {tab[x][y] = new Zumbi(x,y); break;}
 			}while(ocupado(x,y));
 		}
@@ -57,13 +65,18 @@ public class Tabuleiro {
 		this.numJogada = 0;
 		this.numHumanos = numHumanos;
 		this.numZumbis = numZumbis;
-		
+
+		gravaArquivo("inicio.txt");
 	}
 	
 	public static Tabuleiro getInstance(){
-		if(tabuleiro == null) return new Tabuleiro();
-		else return tabuleiro;
+		if(tabuleiro == null) {
+			tabuleiro = new Tabuleiro();
+		}
+		return tabuleiro;
 	}
+	
+	public int getSize(){ return tam; }
 	
 	public boolean existePosicao(Posicao p){
 		int x = p.getX(), y = p.getY();
@@ -194,6 +207,29 @@ public class Tabuleiro {
 		return aux;
 	}
 	
+	public void gravaArquivo(String nomeArq){
+		Path path1 = Paths.get(nomeArq);
+		Personagem p;
+		try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(path1, Charset.defaultCharset()))) {
+			writer.format("%s%n",tab.length); // grava o tamanho do tabuleiro
+			for(int i = 0; i <tab.length;i++){ // percorre o tab
+				for(int j=0;j<tab.length;j++){
+					if(tab[i][j] == null) continue;  // se encontrar posicoes vazias continua......
+
+					p = tab[i][j]; // guarda o personagem da posicao
+					if(p instanceof Humano){ // verifica qual personagem é....
+						char hum = 'H'; // variavel criada pra humano
+						writer.format("%s,%s,%s%n",hum,p.getPos().getX(), p.getPos().getY()); } // escreve no arquivo H e linha + coluna
+					else{
+						char zum = 'Z';
+						writer.format("%s,%s,%s%n",zum,p.getPos().getX(), p.getPos().getY());  // // escreve no arquivo Z e linha + coluna
+					}
+				}
+			}
+		}
+		catch (IOException x) { System.err.format("Erro de E/S: %s%n", x);}
+	}
+	
 	@Override
 	public String toString(){
 		String msg = "Humanos : " + numHumanos + "\nZumbis : " + numZumbis + "\n";
@@ -206,4 +242,5 @@ public class Tabuleiro {
 		}
 		return msg;
 	}
+
 }
