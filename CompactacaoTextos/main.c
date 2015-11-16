@@ -2,146 +2,177 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*************************LISTAS****************************/
 typedef struct Temp{
     char *pal;
     struct Temp *prox;
 }TNODO;
 
+typedef struct Temp2{
+    TNODO *refPal;
+    struct Temp2 *prox;
+}TREF;
+
 TNODO *ListaDePalavras = NULL;
-TNODO *TextoComoListaDePalavras = NULL;
+TREF *TextoComoListaDePalavras = NULL;
 
-
-TNODO *Insere(char *palavra, TNODO *inicio) {
-    TNODO *p = NULL;
-    p = (TNODO*) malloc(sizeof (TNODO));
+/*****************LISTA DE PALAVRAS**********************/
+TNODO *Insere(char *palavra) {
+    TNODO *p;
+    p = (TNODO*)malloc(sizeof (TNODO));
     p -> pal = palavra;
-    if (inicio == NULL) {
+    if (ListaDePalavras == NULL) {
         p -> prox = NULL;
         return p;
     }
-    TNODO *ultima = inicio;
+    TNODO *ultima = ListaDePalavras;
     while (ultima->prox != NULL) {
         ultima = ultima->prox;
     }
     ultima -> prox = p;
-    return inicio;
+    return ListaDePalavras;
 }
 
-TNODO *BuscaDado(TNODO *inicio, char *dado)
+TNODO *BuscaDadoListaPalavras(char *dado)
 {
-    TNODO *ptr = NULL;
-  ptr = inicio;
-  while (ptr != NULL) {
-     if (strcmp(ptr->pal, dado)==0)
+    TNODO *ptr = ListaDePalavras;
+    if (ListaDePalavras == NULL) return NULL;
+
+    while (ptr !=NULL)
+    {
+        if (strcmp(ptr->pal,dado) == 0)
             return (ptr);
-     else ptr = ptr->prox;
-  }
-  return NULL;
+        else ptr = ptr->prox;
+    }
+    return NULL;
 }
 
-int ExisteDado(TNODO *inicio, char *dado)
+int ExisteDadoListaPalavras(char *dado)
 {
-  if(BuscaDado(inicio,dado) != NULL) return 1;
+  if(BuscaDadoListaPalavras(dado) != NULL) return 1;
   return 0;
 }
 
-void Imprime(TNODO *inicio)
+int TamanhoLista()
 {
-    TNODO *ptr = NULL;
-  if (inicio == NULL)
-  {
-    printf("--- fim da lista ---\n\n");
-    return;
-  }
-  ptr = inicio;
-  while (ptr !=NULL) {
-     printf("Palavra Lista = %s\n",ptr->pal);
-     ptr = ptr->prox;
-  }
-  printf("--- fim da lista ---\n\n");
+    int cont = 0;
+    TNODO *ptr = ListaDePalavras;
+    while (ptr != NULL)
+    {
+        cont++;
+        ptr = ptr->prox;
+    }
+    return cont;
 }
 
-/*************************ARQUIVOS****************************/
-void LeArquivoTexto(TNODO *inicio)
+void Imprime()
 {
-    FILE *arq = NULL;
-    arq = fopen("entrada.txt", "rt");
-    if (arq == NULL){ perror("Error"); return; }
+    TNODO *ptr = ListaDePalavras;
+    while (ptr !=NULL) {
+        printf("%s\n",ptr->pal);
+        ptr = ptr->prox;
+    }
+    printf("--- fim da lista ---\n\n");
+}
+
+/*********************TEXTO****************************/
+TREF *InsereRef(TNODO *palavra) {
+    TREF *p;
+    p = (TREF*)malloc(sizeof (TREF));
+    p -> refPal = palavra;
+    if (TextoComoListaDePalavras == NULL) {
+        p -> prox = NULL;
+        return p;
+    }
+    TREF *ultima = TextoComoListaDePalavras;
+    while (ultima->prox != NULL) {
+        ultima = ultima->prox;
+    }
+    ultima -> prox = p;
+    return TextoComoListaDePalavras;
+}
+
+void ImprimeTexto()
+{
+    TREF *ptr = TextoComoListaDePalavras;
+    while (ptr !=NULL)
+    {
+        printf("%s\t",ptr->refPal->pal);
+        ptr = ptr->prox;
+    }
+    printf("\n--- fim do texto ---\n\n");
+}
+
+int TamanhoTexto()
+{
+    int cont = 0;
+    TREF *ptr = TextoComoListaDePalavras;
+    while (ptr !=NULL)
+    {
+        cont++;
+        ptr = ptr->prox;
+    }
+    return cont;
+}
+
+/*******************ARQUIVOS***********************/
+void LeArquivoTexto(char *arqTxt)
+{
+    FILE *arq;
+    arq = fopen(arqTxt, "rt");
+    if (arq == NULL){ perror("Error"); return;}
+    else printf("Lendo texto do arquivo \"%s\"\n",arqTxt);
 
     int result = 0;
-    char c = ' ';
-    char *s = NULL;
+    while(result != EOF)
+    {
+        char *s = (char*) malloc(sizeof(char)*50);
+        result = fscanf(arq, "%s", s);
 
-   while(result != EOF)
-   {
-        result = fscanf(arq, "%c", &c);
-        printf("_%c_",c);
+        if((int)s[0] == 0) continue;
+        else if(!ExisteDadoListaPalavras(s)) ListaDePalavras = Insere(s);
 
-        if(c == ' ' || c == '\n'){
-            printf("PALAVRA: %s\n", s);
-            if(!ExisteDado(ListaDePalavras,s)) ListaDePalavras = Insere(s,ListaDePalavras);
-            Imprime(ListaDePalavras);
-            s = NULL;
-        }else if(isalnum(c)){
-            if(s == NULL) {
-                    s = (char*) malloc (sizeof(char));
-                    s[0] = c;
-            }
-            else strcat(s,&c);
-        }
-   }
-
-    printf("----acabou-----");
+        TNODO *palavra = BuscaDadoListaPalavras(s);
+        TextoComoListaDePalavras = InsereRef(palavra);
+    }
     fclose(arq);
 }
-/*
-void LeArquivoBinario(TNODO *inicio)
+
+void GravaArquivoBinario()
 {
-  FILE *arq;
-  int result;
-  int i;
+    FILE *arq;
+    int result;
 
-  // Abre um arquivo BINÁRIO para LEITURA
-  arq = fopen("ArqTeste.dat", "rb");
-  if (arq == NULL)  // Se houve erro na abertura
-  {
-     printf("Problemas na abertura do arquivo\n");
-     return;
-  }
-  result = fread (&Vet[0], sizeof(double), 100, arq);
-  printf("Nro de elementos lidos: %d\n", result);
+    arq = fopen("ArqBinario.dat", "wb");
+    if (arq == NULL) { printf("Problemas na CRIACAO do arquivo\n"); return; }
 
-  for (i=0; i<result; i++)
-      printf("%lf\n", Vet[i]);
+    int tamListaPal = TamanhoLista();
+    int tamTexto = TamanhoTexto();
+    int *ptrLista = &tamListaPal;
+    int *ptrTexto = &tamTexto;
 
-  fclose(arq);
+    result = fwrite(&ptrLista, sizeof(int), 1, arq);
+    result += fwrite(&ptrTexto, sizeof(int), 1, arq);
+
+    printf("tamanho int : %d\n",sizeof(int));
+    printf("Nro de elementos gravados: %d", result);
+    fclose(arq);
 }
-*/
-/*************************************************************/
+/************************MAIN*********************************/
 int main()
 {
-    printf("Hello world!\n");
+    printf("Digite o nome do arquivo contendo o texto: ");
+    char *arqTxt = (char*) malloc (sizeof(char)*50);
+    scanf("%s",arqTxt);
 
-
-    char *S = "ABCD";
-    ListaDePalavras = Insere(S,ListaDePalavras);
-    S = "19283";
-    ListaDePalavras = Insere(S,ListaDePalavras);
-    S = "iosduroew";
-    ListaDePalavras = Insere(S,ListaDePalavras);
+    LeArquivoTexto(arqTxt);
+    printf("\nLISTA DE PALAVRAS:\n");
     Imprime(ListaDePalavras);
+    printf("Tamanho : %d\n", TamanhoLista());
+    printf("TEXTO:\n");
+    ImprimeTexto(TextoComoListaDePalavras);
+    printf("Tamanho : %d\n", TamanhoTexto());
 
-   LeArquivoTexto(ListaDePalavras);
-
-    /*char *S = "ABCD";
-    ListaDePalavras = Insere(S,ListaDePalavras);
-    Imprime(ListaDePalavras);
-
-    TextoComoListaDePalavras = Insere(ListaDePalavras->pal, TextoComoListaDePalavras);
-    printf("TEXTO:");
-    Imprime(TextoComoListaDePalavras);*/
-
+    GravaArquivoBinario();
     getchar();
     return 0;
 }
