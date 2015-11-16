@@ -8,7 +8,7 @@ public class App {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new JanelaPrincipal();
+				JanelaPrincipal.getInstance();
 				//new JanelaHistoria();
 			}
 		});

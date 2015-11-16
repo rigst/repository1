@@ -8,26 +8,34 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
-
 import javax.swing.Scrollable;
+import java.util.ArrayList;
 
 public class Tabuleiro{
 	public Personagem[][] tab;
+	public ArrayList<Personagem> lista;
 	public int tam;
 	public int numJogada;
 	public int numHumanos, numZumbis;
 	
 	public static Tabuleiro tabuleiro = null; 
 	
+	public static Tabuleiro getInstance(){
+		if(tabuleiro == null) {
+			tabuleiro = new Tabuleiro();
+		}
+		return tabuleiro;
+	}
+	
 	private Tabuleiro(){
-		tam = 10;
+		tam = 100;
 		tab = new Personagem[tam][tam];
+		lista = new ArrayList<Personagem>();
 		numHumanos = 0; numZumbis = 0;
 		gravaArquivo("inicio.txt");
 	}
 	
-	public void setNumHumanos(int n) { numHumanos = n; }
-	public void setNumZumbis(int n) { numZumbis = n;}
+	public int getSize(){ return tam; }
 	
 	public void setTabuleiro(Personagem[][] mat){
 		tab = mat;
@@ -37,6 +45,8 @@ public class Tabuleiro{
 	public void setTabuleiro(int numHumanos, int numZumbis){
 		Random r = new Random();
 		int x = 0, y = 0;
+		
+		if(numHumanos + numZumbis > getSize()*getSize()) return;
 		
 		//Coloca null em todas as posições
 		for(int i=0; i<tab.length; i++){
@@ -50,7 +60,7 @@ public class Tabuleiro{
 			do{
 				x = Math.abs(r.nextInt()) % tam;
 				y = Math.abs(r.nextInt()) % tam;
-				if(!ocupado(x,y)) { tab[x][y] = new Humano(x,y); break;}
+				if(!ocupado(x,y)) { Humano h = new Humano(x,y); tab[x][y] = h; lista.add(h); break;}
 			}while(ocupado(x,y));
 		}
 		
@@ -58,7 +68,7 @@ public class Tabuleiro{
 		for(int i=0; i<numZumbis; i++){
 			do{	x = Math.abs(r.nextInt()) % tam;
 			y = Math.abs(r.nextInt()) % tam;
-			if(!ocupado(x,y)) {tab[x][y] = new Zumbi(x,y); break;}
+			if(!ocupado(x,y)) {Zumbi z = new Zumbi(x,y); tab[x][y] = z; lista.add(z); break;}
 			}while(ocupado(x,y));
 		}
 		
@@ -68,15 +78,10 @@ public class Tabuleiro{
 
 		gravaArquivo("inicio.txt");
 	}
+
+	public void setNumHumanos(int n) { numHumanos = n; }
 	
-	public static Tabuleiro getInstance(){
-		if(tabuleiro == null) {
-			tabuleiro = new Tabuleiro();
-		}
-		return tabuleiro;
-	}
-	
-	public int getSize(){ return tam; }
+	public void setNumZumbis(int n) { numZumbis = n;}
 	
 	public boolean existePosicao(Posicao p){
 		int x = p.getX(), y = p.getY();
@@ -85,98 +90,41 @@ public class Tabuleiro{
 		
 	}
 	
-	public boolean ocupado(Personagem[][] mat, int x, int y){
-		if(mat[x][y] == null) return false;
-		else {
-			return true;
-		}
-	}
-	
-	public boolean ocupado(Posicao p, Personagem[][] mat){
-		int x = p.getX(), y = p.getY();
-		return ocupado(mat,x,y);
-	}
-	
 	public boolean ocupado(int x, int y){
-		if(tab[x][y] == null) return false;
-		else {
-			return true;
-		}
+		if(tab[x][y] != null) return true;
+		return false;
 	}
 	
 	public boolean ocupado(Posicao p){
 		int x = p.getX(), y = p.getY();
-		return ocupado(x,y);
+		if(tab[x][y] != null) return true;
+		return false;
 	}
 	
 	public Personagem getPersonagem(Posicao p){
 		return tab[p.getX()][p.getY()];
 	}
 
-	public void setaNaoMovidos(){
-		//DIZ QUE TODOS NAO FORAM MOVIDOS
-		for(int i=0; i<tab.length; i++){
-			for(int j=0; j<tab.length; j++){
-				Personagem aux = tab[i][j];
-				if(aux != null) aux.setMovido(false);
-			}
-		}
+	public void moverPersonagem(Posicao posInicial, Posicao posFinal){
+		tab[posFinal.getX()][posFinal.getY()] = tab[posInicial.getX()][posInicial.getY()];
+		tab[posInicial.getX()][posInicial.getY()] = null;			
 	}
 	
-	public void moverPersonagem(Personagem p, Posicao pos, Personagem[][] aux, int i, int j){
-		if(ocupado(pos,aux)){
-			Personagem p2 = aux[pos.getX()][pos.getY()];
-			
-			if(mesmoTipo(p,p2)) {aux[i][j] = p; p.setMovido(true); System.out.println("MESMO TIPO Não move"); }
-			else {
-				System.out.println("ATACA");
-				ataca(p, p2, aux);
-			}
-		}
-		else{
-			aux[pos.getX()][pos.getY()] = p;
-			p.setMovido(true); 
-			p.setPos(pos);
-			aux[i][j] = null;
-		}
+	public void deletaPersonagem(Personagem p){
+		Posicao pos = p.getPos();
+		lista.remove(tab[pos.getX()][pos.getY()]);
+		tab[pos.getX()][pos.getY()] = null;
 	}
 	
 	public void avancaJogada(){
-		setaNaoMovidos();
-			
-		Personagem[][] aux = new Personagem[tab.length][tab.length];
-		
 		for(int i=0; i<tab.length; i++){
 			for(int j=0; j<tab.length; j++){
-				Personagem p = tab[i][j];
-
-				if(p != null && !p.getMovido()){
-					Posicao pos = p.proxPos();
-	System.out.println("Personagem : " + p + "\tir para :" + pos);
-					moverPersonagem(p,pos,aux,i,j);
-				}
+				Personagem aux = tab[i][j];
+				aux.avancaJogada();
 			}
 		}
-		tab = aux;
 	}
-	
-	public void ataca(Personagem p1, Personagem p2, Personagem[][] aux){
-		System.out.println("Atacante : " + p1 + " Atacado : " + p2);
 		
-		aux[p2.getPos().getX()][p2.getPos().getY()] = p1;
-		aux[p1.getPos().getX()][p1.getPos().getY()] = null;
-		if(p2 instanceof Zumbi) numZumbis--;
-		else if(p2 instanceof Humano) numHumanos--;		
-	}
-	
-	/******CONSERTAR*****/
-	public boolean mesmoTipo(Personagem p, Personagem p2){
-		if(p instanceof Humano && p2 instanceof Humano) return true;
-		else if(p instanceof Humano && p2 instanceof Zumbi) return false;
-		else if(p instanceof Zumbi && p2 instanceof Humano) return false;
-		return true;
-	}
-	
 	public Personagem[][] leArquivo(String s){
 		Personagem[][] aux = null;
 		int nH = 0, nZ = 0;

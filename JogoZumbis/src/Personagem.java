@@ -4,13 +4,39 @@ import java.util.Random;
 public abstract class Personagem {
 	public enum DIRECAO{ N,S,L,O,NE,NO,SO,SE}
 	
-	private boolean movido = false;
+	private boolean vivo = true;
 	private DIRECAO direcao;
 	private Posicao pos;
 
+	public abstract boolean mesmoTipo(Personagem p);
+	public abstract void ataca(Personagem p);
+	public abstract void atacado(Personagem p);
 
-	public boolean getMovido() { return movido;} 
-	public void setMovido(boolean b) { movido = b; } 
+	public Posicao getPos() { return pos; }
+	public void setPos(Posicao p) { pos = p;} 
+	
+	public boolean getVivo() { return vivo;} 
+	public void setVivo(boolean b) { vivo = b; } 
+	
+	public DIRECAO getDirecao() { return direcao; }
+	public void setDirecao(DIRECAO dir) { direcao = dir; }
+	public static DIRECAO sorteiaDirecao(){
+		Random r = new Random();
+		int numDirecao = r.nextInt() % 8;
+		switch(numDirecao){
+			case 0 : return DIRECAO.N;
+			case 1 : return DIRECAO.S;
+			case 2 : return DIRECAO.L;
+			case 3 : return DIRECAO.O;
+			case 4 : return DIRECAO.NE;
+			case 5 : return DIRECAO.NO;
+			case 6 : return DIRECAO.SE;
+			case 7 : return DIRECAO.SO;	
+			default : return DIRECAO.N;
+		}		
+	}
+	
+	public abstract void avancaJogada();
 	
 	public Posicao proxPos() {
 		int x, y;
@@ -32,29 +58,6 @@ public abstract class Personagem {
 		}
 		return nova;
 	}
-	
-	public Posicao getPos() { return pos; }
-	
-	public void setPos(Posicao p) { pos = p;} 
-	
-	public static DIRECAO sorteiaDirecao(){
-		Random r = new Random();
-		int numDirecao = r.nextInt() % 8;
-		switch(numDirecao){
-			case 0 : return DIRECAO.N;
-			case 1 : return DIRECAO.S;
-			case 2 : return DIRECAO.L;
-			case 3 : return DIRECAO.O;
-			case 4 : return DIRECAO.NE;
-			case 5 : return DIRECAO.NO;
-			case 6 : return DIRECAO.SE;
-			case 7 : return DIRECAO.SO;	
-			default : return DIRECAO.N;
-		}		
-	}
-	
-	public DIRECAO getDirecao() { return direcao; }
-	public void setDirecao(DIRECAO dir) { direcao = dir; }
 	
 	public String toString() { return "(" + pos.getX() + "," + pos.getY() + ")";}
 	

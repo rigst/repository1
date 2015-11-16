@@ -21,8 +21,17 @@ import javax.swing.JTextField;
 
 public class JanelaPrincipal extends JFrame{
 	private JPanel[][] tabuleiro;
+	private static JanelaPrincipal janela;
 	
-	public JanelaPrincipal(){
+	public static JanelaPrincipal getInstance(){
+		if(janela == null){
+			JanelaPrincipal j = new JanelaPrincipal();
+			janela = j;
+		}
+		return janela;
+	}
+	
+	private JanelaPrincipal(){
 		//Janela
 		setSize(1000,700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,9 +53,6 @@ public class JanelaPrincipal extends JFrame{
 		//Cria Centro
 		criaCentro(mainPanel);
 		
-		
-
-		
 		//Adiciona Painel Principal na Janela
 		setContentPane(mainPanel);
 		setVisible(true);
@@ -61,7 +67,8 @@ public class JanelaPrincipal extends JFrame{
 		JButton historia = new JButton("História");
 		historia.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				new JanelaHistoria();
+				JanelaHistoria a = new JanelaHistoria(JanelaPrincipal.getInstance());
+				a.setVisible(true);
 			}
 		});
 		
@@ -75,6 +82,8 @@ public class JanelaPrincipal extends JFrame{
 		
 		//Coloca Painel dos Botões no Painel Principal
 		mainPanel.add(pnMenu, BorderLayout.NORTH);
+		
+		janela = this;
 	}
 	
 	public void criaMenuInferior(JPanel mainPanel){
@@ -129,7 +138,6 @@ public class JanelaPrincipal extends JFrame{
 		JPanel centroDir = criaPainelGrafico();
 		JScrollPane jsp = new JScrollPane(centroEsq);
 		
-	//	divisorCentro.add(centroEsq);
 		divisorCentro.add(jsp);
 		divisorCentro.add(centroDir);
 	
@@ -169,10 +177,6 @@ public class JanelaPrincipal extends JFrame{
 				}
 				
 				pnTabGeral.add(tabuleiro[y][x]);
-				
-//				tabuleiro[y][x] = new JPanel();
-//				tabuleiro[y][x].add(new JLabel(this.kingBlack));
-//				pnTabGeral.add(tabuleiro[y][x]);
 			}
 		}
 		
