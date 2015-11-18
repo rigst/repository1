@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ComponentColorModel;
+import java.util.Observable;
+import java.util.Observer;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -19,7 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class JanelaPrincipal extends JFrame{
+public class JanelaPrincipal extends JFrame implements Observer{
 	private JPanel[][] tabuleiro;
 	private static JanelaPrincipal janela;
 	
@@ -67,8 +69,9 @@ public class JanelaPrincipal extends JFrame{
 		JButton historia = new JButton("História");
 		historia.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JanelaHistoria a = new JanelaHistoria(JanelaPrincipal.getInstance());
-				a.setVisible(true);
+				/*JanelaHistoria a = new JanelaHistoria(JanelaPrincipal.getInstance());
+				a.setVisible(true);*/
+				Tabuleiro.getInstance().avancaJogada(1);
 			}
 		});
 		
@@ -146,7 +149,7 @@ public class JanelaPrincipal extends JFrame{
 	
 	public JPanel criaPainelTab(){
 		JPanel pnGeral = new JPanel(new GridLayout(Tabuleiro.getInstance().getSize(),Tabuleiro.getInstance().getSize()));
-		desenhaTabuleiro(pnGeral, Tabuleiro.getInstance().getSize());
+		desenhaTabuleiro(pnGeral);
 		return pnGeral;
 	}
 	
@@ -159,7 +162,8 @@ public class JanelaPrincipal extends JFrame{
 	private ImageIcon zumbi = new ImageIcon(System.getProperty("user.dir")
 			+ "/Images/zumbi.jpg");
 	
-	private void desenhaTabuleiro(JPanel pnTabGeral, int tam) {
+	private void desenhaTabuleiro(JPanel pnTabGeral) {
+		int tam = Tabuleiro.getInstance().getSize();
 		tabuleiro = new JPanel[tam][tam];
 		
 		for (int y = 0; y < tam; y++){
@@ -179,15 +183,38 @@ public class JanelaPrincipal extends JFrame{
 				pnTabGeral.add(tabuleiro[y][x]);
 			}
 		}
-		
 	}
 	
+	public void atualizaTabuleiro(Personagem p){
+		Personagem persona = Tabuleiro.getInstance().getPersonagem(p.getPos());
+		JLabel img;
+		int y = p.getPos().getX();
+		int x = p.getPos().getY();
+		
+		if(persona == null) img = new JLabel(grama);
+		else if(persona instanceof Humano) img = new JLabel(kingBlack);
+		else if (persona instanceof Zumbi) img = new JLabel(zumbi);
+		else img = new JLabel(grama);
+				
+		tabuleiro[y][x].removeAll();
+		tabuleiro[y][x].add(img);
+		tabuleiro[y][x].validate();	
+	}
+		
 	public JPanel criaPainelGrafico(){
 		JPanel pn = new JPanel();
 		JButton bt = new JButton("AAA");
 		pn.add(bt);
 		return pn;
 	}
-	
-	
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		if(o instanceof Tabuleiro){
+			Personagem p = (Personagem)arg;
+			atualizaTabuleiro(p);
+		}
+	}
+
 }

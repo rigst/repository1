@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -7,14 +5,14 @@ import java.nio.file.Files;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Observable;
 import java.util.Random;
-import javax.swing.Scrollable;
 import java.util.ArrayList;
 
-public class Tabuleiro{
+public class Tabuleiro extends Observable{
 	public Personagem[][] tab;
 	public ArrayList<Personagem> lista;
-	public int tam;
+	public final int TAM = 5;
 	public int numJogada;
 	public int numHumanos, numZumbis;
 	
@@ -28,18 +26,20 @@ public class Tabuleiro{
 	}
 	
 	private Tabuleiro(){
-		tam = 100;
-		tab = new Personagem[tam][tam];
+		tab = new Personagem[TAM][TAM];
 		lista = new ArrayList<Personagem>();
 		numHumanos = 0; numZumbis = 0;
 		gravaArquivo("inicio.txt");
 	}
 	
-	public int getSize(){ return tam; }
+	public int getSize(){ return TAM; }
 	
 	public void setTabuleiro(Personagem[][] mat){
 		tab = mat;
 		gravaArquivo("inicio.txt");
+		
+		setChanged();
+		notifyObservers();
 	}
 	
 	public void setTabuleiro(int numHumanos, int numZumbis){
@@ -58,16 +58,16 @@ public class Tabuleiro{
 		//HUMANOS
 		for(int i=0; i<numHumanos; i++){
 			do{
-				x = Math.abs(r.nextInt()) % tam;
-				y = Math.abs(r.nextInt()) % tam;
+				x = Math.abs(r.nextInt()) % TAM;
+				y = Math.abs(r.nextInt()) % TAM;
 				if(!ocupado(x,y)) { Humano h = new Humano(x,y); tab[x][y] = h; lista.add(h); break;}
 			}while(ocupado(x,y));
 		}
 		
 		//ZUMBIS
 		for(int i=0; i<numZumbis; i++){
-			do{	x = Math.abs(r.nextInt()) % tam;
-			y = Math.abs(r.nextInt()) % tam;
+			do{	x = Math.abs(r.nextInt()) % TAM;
+			y = Math.abs(r.nextInt()) % TAM;
 			if(!ocupado(x,y)) {Zumbi z = new Zumbi(x,y); tab[x][y] = z; lista.add(z); break;}
 			}while(ocupado(x,y));
 		}
@@ -76,6 +76,9 @@ public class Tabuleiro{
 		this.numHumanos = numHumanos;
 		this.numZumbis = numZumbis;
 
+		setChanged();
+		notifyObservers();
+		
 		gravaArquivo("inicio.txt");
 	}
 
@@ -116,11 +119,12 @@ public class Tabuleiro{
 		tab[pos.getX()][pos.getY()] = null;
 	}
 	
-	public void avancaJogada(){
-		for(int i=0; i<tab.length; i++){
-			for(int j=0; j<tab.length; j++){
-				Personagem aux = tab[i][j];
-				aux.avancaJogada();
+	public void avancaJogada(int qnt){
+		for(int i=0; i<qnt; i++){
+			for(Personagem p : lista){
+				p.avancaJogada();
+				setChanged();
+				notifyObservers(p);
 			}
 		}
 	}
@@ -177,6 +181,7 @@ public class Tabuleiro{
 		}
 		catch (IOException x) { System.err.format("Erro de E/S: %s%n", x);}
 	}
+
 	
 	@Override
 	public String toString(){
