@@ -4,9 +4,10 @@ import javax.swing.SwingUtilities;
 public class App {
 	public static void main(String args[]){
 		Tabuleiro tab = Tabuleiro.getInstance();
-		tab.setTabuleiro(2,3);
+		tab.setTabuleiro(6,6);
 	
-		System.out.println(tab.toString());
+		System.out.println(tab);
+		System.out.println("LISTA : " + tab.getLista());
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -18,5 +19,7 @@ public class App {
 		});
 		
 		
+	tab.avancaJogada(1);
+	System.out.println(tab);
 	}
 }

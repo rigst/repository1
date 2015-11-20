@@ -17,6 +17,10 @@ public class Humano extends Personagem {
 				ataca(aux);
 			}
 		}
+		else{
+			Tabuleiro.getInstance().moverPersonagem(this.getPos(),prox);
+			this.setPos(prox);
+		}
 	}
 	
 	@Override

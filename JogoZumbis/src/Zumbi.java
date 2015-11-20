@@ -28,8 +28,19 @@ public class Zumbi extends Personagem {
 
 	@Override
 	public void avancaJogada() {
-		// TODO Auto-generated method stub
-		
+		Posicao prox = proxPos();
+		if(Tabuleiro.getInstance().ocupado(prox)){
+			Personagem aux = Tabuleiro.getInstance().getPersonagem(prox);
+			if(mesmoTipo(aux)){ //MUDA DE DIRECAO
+				setDirecao(sorteiaDirecao());
+				avancaJogada();
+			}else{ //ATACA 
+				ataca(aux);
+			}
+		}
+		else{
+			Tabuleiro.getInstance().moverPersonagem(this.getPos(),prox);
+			this.setPos(prox);
+		}
 	}
-	
 }

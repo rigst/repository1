@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Random;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class Tabuleiro extends Observable{
 		numHumanos = 0; numZumbis = 0;
 		gravaArquivo("inicio.txt");
 	}
+	
+	public ArrayList<Personagem> getLista() { return lista; }
 	
 	public int getSize(){ return TAM; }
 	
@@ -120,13 +123,15 @@ public class Tabuleiro extends Observable{
 	}
 	
 	public void avancaJogada(int qnt){
-		for(int i=0; i<qnt; i++){
-			for(Personagem p : lista){
-				p.avancaJogada();
-				setChanged();
-				notifyObservers(p);
-			}
+		for (int i=0;i<lista.size();i++) {
+			Personagem p= lista.get(i);
+			p.setPosAnterior(p.getPos());
+			p.avancaJogada();
+			setChanged();
+			notifyObservers(p);		
+		    System.out.println();
 		}
+		
 	}
 		
 	public Personagem[][] leArquivo(String s){

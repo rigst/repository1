@@ -9,9 +9,6 @@ import java.awt.image.ComponentColorModel;
 import java.util.Observable;
 import java.util.Observer;
 
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -186,11 +183,21 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	}
 	
 	public void atualizaTabuleiro(Personagem p){
-		Personagem persona = Tabuleiro.getInstance().getPersonagem(p.getPos());
-		JLabel img;
-		int y = p.getPos().getX();
-		int x = p.getPos().getY();
 		
+		atualizaPos(p.getPos(),p);
+		atualizaPos(p.getPosAnterior(),null);
+		
+	}
+	
+	public void atualizaPos(Posicao pos, Personagem p){
+		JLabel img;
+		Personagem persona = null;
+		int y = 0, x =0;
+		if(p != null){
+			persona = Tabuleiro.getInstance().getPersonagem(p.getPos());
+			y = p.getPos().getX();
+			x = p.getPos().getY();
+		}
 		if(persona == null) img = new JLabel(grama);
 		else if(persona instanceof Humano) img = new JLabel(kingBlack);
 		else if (persona instanceof Zumbi) img = new JLabel(zumbi);

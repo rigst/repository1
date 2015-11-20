@@ -7,11 +7,15 @@ public abstract class Personagem {
 	private boolean vivo = true;
 	private DIRECAO direcao;
 	private Posicao pos;
-
+	private Posicao posAnterior;
+	
 	public abstract boolean mesmoTipo(Personagem p);
 	public abstract void ataca(Personagem p);
 	public abstract void atacado(Personagem p);
 
+	public Posicao getPosAnterior() { return posAnterior; }
+	public void setPosAnterior(Posicao p) { posAnterior = p;}
+	
 	public Posicao getPos() { return pos; }
 	public void setPos(Posicao p) { pos = p;} 
 	
