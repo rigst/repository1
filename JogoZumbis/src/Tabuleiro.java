@@ -13,7 +13,8 @@ import java.util.ArrayList;
 public class Tabuleiro extends Observable{
 	private Personagem[][] tab;
 	private ArrayList<Personagem> lista;
-	private int TAM = 10;
+	private final static int TAM = 15;
+	private final static int NUM_TIPOS_PERSONA = 2;
 	private int numJogada;
 	private int numHumanos, numZumbis;
 	
@@ -25,6 +26,8 @@ public class Tabuleiro extends Observable{
 		}
 		return tabuleiro;
 	}
+	
+	public int getNumeroJogada() { return numJogada;}
 	
 	public int getNumeroHumanos(){
 		return numHumanos;
@@ -54,10 +57,12 @@ public class Tabuleiro extends Observable{
 	public void setTabuleiro(int numHumanos, int numZumbis){
 		lista.clear();
 		Random r = new Random();
-		int x = 0, y = 0;
-		
+		int x = 0, y = 0, escolha = 0;
 		if(numHumanos + numZumbis > getSize()*getSize()) return;
-		
+		this.numJogada = 0;
+		this.numHumanos = numHumanos;
+		this.numZumbis = numZumbis;
+			
 		//Coloca null em todas as posições
 		for(int i=0; i<tab.length; i++){
 			for(int j=0; j<tab.length; j++){
@@ -65,29 +70,29 @@ public class Tabuleiro extends Observable{
 			}
 		}
 		
-		//HUMANOS
-		for(int i=0; i<numHumanos; i++){
+		GerenciadorPersona gerenciador = GerenciadorPersona.getInstance();
+		while(numHumanos > 0 || numZumbis > 0){
 			do{
 				x = Math.abs(r.nextInt()) % TAM;
 				y = Math.abs(r.nextInt()) % TAM;
-				if(!ocupado(x,y)) { Humano h = new Humano(x,y); tab[x][y] = h; lista.add(h); break;}
+				escolha = Math.abs(r.nextInt() % NUM_TIPOS_PERSONA) + 1;
+	System.out.println("X : " + x + " Y : " + y + " escolha : " + escolha );
+				if(!ocupado(x,y)) { 
+					if(escolha == 1 && numHumanos == 0) escolha = 2;
+					else if(escolha == 2 && numZumbis == 0) escolha = 1;
+					
+					Personagem p = gerenciador.createInstance(escolha,new Posicao(x,y)); 
+					tab[x][y] = p; 
+					lista.add(p);
+					if(p instanceof Humano) numHumanos--;
+					else numZumbis--;
+					break;
+				}
 			}while(ocupado(x,y));
 		}
-		
-		//ZUMBIS
-		for(int i=0; i<numZumbis; i++){
-			do{	x = Math.abs(r.nextInt()) % TAM;
-			y = Math.abs(r.nextInt()) % TAM;
-			if(!ocupado(x,y)) {Zumbi z = new Zumbi(x,y); tab[x][y] = z; lista.add(z); break;}
-			}while(ocupado(x,y));
-		}
-		
-		this.numJogada = 0;
-		this.numHumanos = numHumanos;
-		this.numZumbis = numZumbis;
 		
 		gravaArquivo("inicio.txt");
-
+		Grafico.limparGrafico();
 		setChanged();
 		notifyObservers();
 	}
@@ -147,6 +152,7 @@ public class Tabuleiro extends Observable{
 				System.out.println("Moveu de:"+p.getPosAnterior()+" para "+p.getPos());
 			}
 		}
+		numJogada += qnt;
 		setChanged();
 		notifyObservers();		
 	}
@@ -167,8 +173,8 @@ public class Tabuleiro extends Observable{
 				int posY = Integer.parseInt("" + line.charAt(4));
 				
 				Personagem persona;
-				if(tipo == 'H'){ persona = new Humano(posX, posY); nH++;}
-				else { persona = new Zumbi(posX, posY); nZ++; }
+				if(tipo == 'H'){ persona = GerenciadorPersona.getInstance().createInstance(1,new Posicao(posX,posY)); nH++;}
+				else { persona = GerenciadorPersona.getInstance().createInstance(2,new Posicao(posX,posY)); nZ++; }
 				
 				aux[posX][posY] = persona;
 				lista.add(persona);
@@ -177,10 +183,13 @@ public class Tabuleiro extends Observable{
 			System.err.format("Erro de E/S: %s%n", x);
 		}
 		
+		numJogada = 0;
 		setNumHumanos(nH);
 		setNumZumbis(nZ);
 		
 		setTabuleiro(aux);
+		
+		Grafico.limparGrafico();
 		setChanged();
 		notifyObservers();
 	}

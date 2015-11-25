@@ -22,12 +22,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.ui.RefineryUtilities;
+
 public class JanelaPrincipal extends JFrame implements Observer{
 	private JPanel[][] tabuleiro;
 	private static JanelaPrincipal janela;
 	private JPanel pnTab = null;
 	private int numeroDePassos;
-	private String receb;
 	
 	public static JanelaPrincipal getInstance(){
 		if(janela == null){
@@ -36,14 +39,11 @@ public class JanelaPrincipal extends JFrame implements Observer{
 		}
 		return janela;
 	}
-	
-	
-	
+		
 	private JanelaPrincipal(){
 		//Janela
 		this.numeroDePassos = 0;
-		this.receb = "NADA";
-		setSize(1000,700);
+		setSize(1200,700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setTitle("Simulador Zumbi");
 		
@@ -239,6 +239,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	
 		JPanel centroEsq = criaPainelTab();
 		JPanel centroDir = criaPainelGrafico();
+		
 		JScrollPane jsp = new JScrollPane(centroEsq);
 		
 		divisorCentro.add(jsp);
@@ -254,13 +255,13 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	}
 	
 	private ImageIcon humano = new ImageIcon(System.getProperty("user.dir")
-			+ "/Images/humano.jpg");
+			+ "/Images/soldier.jpg");
 	
 	private ImageIcon grama = new ImageIcon(System.getProperty("user.dir")
 			+ "/Images/grama.jpg");
 	
 	private ImageIcon zumbi = new ImageIcon(System.getProperty("user.dir")
-			+ "/Images/zumbi.jpg");
+			+ "/Images/dog.jpg");
 	
 	private void desenhaTabuleiro(JPanel pnTabGeral) {
 		int tam = Tabuleiro.getInstance().getSize();
@@ -309,8 +310,8 @@ public class JanelaPrincipal extends JFrame implements Observer{
 		
 	public JPanel criaPainelGrafico(){
 		JPanel pn = new JPanel();
-		JButton bt = new JButton("AAA");
-		pn.add(bt);
+		Grafico g = new Grafico("a","b");
+	    pn.add(g.getGrafico()); 
 		return pn;
 	}
 
@@ -337,6 +338,8 @@ public class JanelaPrincipal extends JFrame implements Observer{
 			List<Personagem> lp = Tabuleiro.getInstance().getLista();
 			atualizaTabuleiro(lp);
 			pnTab.updateUI();
+		}else{ //gráfico
+			
 		}
 	}
 }

@@ -1,7 +1,7 @@
 public class Zumbi extends Personagem {
 
-	public Zumbi(int x, int y){
-		setPos(new Posicao(x,y));
+	public Zumbi(Posicao p){
+		setPos(p);
 		setDirecao(sorteiaDirecao());
 	}
 		
@@ -32,10 +32,7 @@ public class Zumbi extends Personagem {
 		Posicao prox = proxPos();
 		if(Tabuleiro.getInstance().ocupado(prox)){
 			Personagem aux = Tabuleiro.getInstance().getPersonagem(prox);
-			if(mesmoTipo(aux)){ //MUDA DE DIRECAO
-				setDirecao(sorteiaDirecao());
-				avancaJogada();
-			}else{ //ATACA 
+			if(!mesmoTipo(aux)){ //ATACA 
 				ataca(aux);
 			}
 		}

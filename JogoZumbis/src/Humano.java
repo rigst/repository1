@@ -1,7 +1,7 @@
 public class Humano extends Personagem {
 
-	public Humano(int x, int y){
-		setPos(new Posicao(x,y));
+	public Humano(Posicao p){
+		setPos(p);
 		setDirecao(sorteiaDirecao());
 	}
 	
