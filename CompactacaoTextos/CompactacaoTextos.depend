@@ -1,11 +1,5 @@
 # depslib dependency file v1.0
-1447096013 source:h:\prog baixo nivel\compactacaotextos\main.c
-	<stdio.h>
-	<stdlib.h>
-
-1447096013 
-
-1447963747 source:/home/PORTOALEGRE/15105188/DriveH/Prog Baixo Nivel/CompactacaoTextos/main.c
+1448455250 source:/home/mini/CompactacaoTextos/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

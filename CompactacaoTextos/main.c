@@ -15,6 +15,8 @@ typedef struct Temp2{
 TNODO *ListaDePalavras = NULL;
 TREF *TextoComoListaDePalavras = NULL;
 
+int const TAM_MAX_PAL = 20;
+
 /*****************LISTA DE PALAVRAS**********************/
 void CriaLista()
 {
@@ -201,15 +203,16 @@ printf("GRAVAÇÃO\nGravou Tamanho Lista : %d\t Tamanho Texto : %d\n", tamListaP
 void GravaBinarioLista(FILE *arq)
 {
     int result = 0, tamPal = 0;
-    int *ptrTamPal = &tamPal;
+    char fimPal = '@';
+    char *ptrFimPal = &fimPal;
     TNODO *aux = ListaDePalavras;
     while(aux != NULL)
     {
 printf("Gravou Palavra : %s\n", aux->pal);
         tamPal = strlen(aux->pal);
-        result = fwrite(ptrTamPal, sizeof(int), 1, arq);
-printf("Gravou tamanho : %d\n", tamPal);
         result = fwrite(aux->pal, sizeof(char)*tamPal,1, arq);
+printf("Gravou termino\n");
+        result = fwrite(ptrFimPal, sizeof(char), 1, arq);
         aux = aux->prox;
     }
 }
@@ -222,7 +225,7 @@ void GravaBinarioTexto(FILE *arq)
     while(aux != NULL)
     {
         char *pal = aux->refPal->pal;
-printf("Palavra : %s\n", aux->refPal->pal);
+printf("Palavra atual : %s\n", aux->refPal->pal);
         posPal = posPalavra(pal);
 printf("Gravou Posicao : %d\n", posPal);
         result = fwrite(ptrPosPal, sizeof(int), 1, arq);
@@ -256,26 +259,33 @@ ImprimeTexto();
 void LeBinarioListaPal(int tamListaPal, FILE *arq)
 {
     CriaLista();
-    int i, result = 0, tamPal = 0;
-    for(i=0; i<tamListaPal; i++) //pega cada palavra
+    while(tamListaPal > 0)
     {
-        result = fread (&tamPal, sizeof(int), 1, arq);
-printf("Tamanho pal %d\n", tamPal);
-        char *palavra = (char*) malloc (sizeof(char)*tamPal);
-        result +=  fread (palavra, sizeof(char)*tamPal, 1, arq);
-printf("Leu a palavra : %s\n", palavra);
-        ListaDePalavras = Insere(palavra);
+        char* palAtual = (char*) malloc (sizeof(char)*TAM_MAX_PAL);
+        char* aux = (char*) malloc (sizeof(char));
+        fread(aux, sizeof(char),1,arq);
+        while(strcmp(aux,"@") != 0){
+printf("Pegou char : %s\n", aux);
+            strcat(palAtual,aux);
+            fread(aux, sizeof(char),1,arq);
+printf("Concatenou em palAtual : %s\n", palAtual);
+        }
+        printf("Inseriu na lista : %s\n", palAtual);
+        ListaDePalavras = Insere(palAtual);
+        palAtual = (char*) malloc (sizeof(char)*TAM_MAX_PAL);
+        tamListaPal--;
     }
 }
 
 void LeBinarioTexto(int tamTexto, FILE *arq)
 {
+printf("\nLeitura do texto\n");
     CriaTexto();
     int i, result = 0;
+    int posPalavraLista = 0;
     for(i=0; i<tamTexto; i++)
     {
         TNODO* pal = NULL;
-        int posPalavraLista = 0;
         result = fread(&posPalavraLista, sizeof(int),1,arq);
         pal = BuscaDadoListaPalavrasPos(posPalavraLista);
 printf("Posicao: %d\nPalavra : %s\n", posPalavraLista, pal->pal);
