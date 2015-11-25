@@ -11,19 +11,27 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class Tabuleiro extends Observable{
-	public Personagem[][] tab;
-	public ArrayList<Personagem> lista;
-	public final int TAM = 5;
-	public int numJogada;
-	public int numHumanos, numZumbis;
+	private Personagem[][] tab;
+	private ArrayList<Personagem> lista;
+	private int TAM = 10;
+	private int numJogada;
+	private int numHumanos, numZumbis;
 	
-	public static Tabuleiro tabuleiro = null; 
+	private static Tabuleiro tabuleiro = null; 
 	
 	public static Tabuleiro getInstance(){
 		if(tabuleiro == null) {
 			tabuleiro = new Tabuleiro();
 		}
 		return tabuleiro;
+	}
+	
+	public int getNumeroHumanos(){
+		return numHumanos;
+	}
+	
+	public int getNumeroZumbis(){
+		return numZumbis;
 	}
 	
 	private Tabuleiro(){
@@ -35,17 +43,16 @@ public class Tabuleiro extends Observable{
 	
 	public ArrayList<Personagem> getLista() { return lista; }
 	
-	public int getSize(){ return TAM; }
+	public int getSize(){ return tab.length; }
 	
 	public void setTabuleiro(Personagem[][] mat){
 		tab = mat;
 		gravaArquivo("inicio.txt");
-		
-		setChanged();
-		notifyObservers();
 	}
 	
+	
 	public void setTabuleiro(int numHumanos, int numZumbis){
+		lista.clear();
 		Random r = new Random();
 		int x = 0, y = 0;
 		
@@ -78,11 +85,11 @@ public class Tabuleiro extends Observable{
 		this.numJogada = 0;
 		this.numHumanos = numHumanos;
 		this.numZumbis = numZumbis;
+		
+		gravaArquivo("inicio.txt");
 
 		setChanged();
 		notifyObservers();
-		
-		gravaArquivo("inicio.txt");
 	}
 
 	public void setNumHumanos(int n) { numHumanos = n; }
@@ -117,27 +124,38 @@ public class Tabuleiro extends Observable{
 	}
 	
 	public void deletaPersonagem(Personagem p){
+		if(p instanceof Humano){
+		numHumanos--;
+		}
+		
+		else if(p instanceof Zumbi){
+			numZumbis--;
+			}
 		Posicao pos = p.getPos();
 		lista.remove(tab[pos.getX()][pos.getY()]);
+		
 		tab[pos.getX()][pos.getY()] = null;
 	}
 	
 	public void avancaJogada(int qnt){
-		for (int i=0;i<lista.size();i++) {
-			Personagem p= lista.get(i);
-			p.setPosAnterior(p.getPos());
-			p.avancaJogada();
-			setChanged();
-			notifyObservers(p);		
-		    System.out.println();
+		for(int j = 0; j<qnt; j++){ // recebe a quantidade de jogada 
+			for (int i=0;i<lista.size();i++) {
+				Personagem p= lista.get(i);
+				System.out.println("Vai mover o personagem:"+p);
+				p.setPosAnterior(p.getPos());
+				p.avancaJogada();
+				System.out.println("Moveu de:"+p.getPosAnterior()+" para "+p.getPos());
+			}
 		}
-		
+		setChanged();
+		notifyObservers();		
 	}
 		
-	public Personagem[][] leArquivo(String s){
+	public void leArquivo(String s){
 		Personagem[][] aux = null;
 		int nH = 0, nZ = 0;
 		Path path = Paths.get(s);
+		lista.clear();
 		
 		try (BufferedReader rd = Files.newBufferedReader(path,Charset.defaultCharset())) {
 			String line = "";
@@ -153,6 +171,7 @@ public class Tabuleiro extends Observable{
 				else { persona = new Zumbi(posX, posY); nZ++; }
 				
 				aux[posX][posY] = persona;
+				lista.add(persona);
 			}
 		} catch (IOException x) {
 			System.err.format("Erro de E/S: %s%n", x);
@@ -161,7 +180,9 @@ public class Tabuleiro extends Observable{
 		setNumHumanos(nH);
 		setNumZumbis(nZ);
 		
-		return aux;
+		setTabuleiro(aux);
+		setChanged();
+		notifyObservers();
 	}
 	
 	public void gravaArquivo(String nomeArq){
@@ -198,6 +219,7 @@ public class Tabuleiro extends Observable{
 			}
 			msg += "\n";
 		}
+		
 		return msg;
 	}
 

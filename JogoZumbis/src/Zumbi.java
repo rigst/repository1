@@ -17,6 +17,7 @@ public class Zumbi extends Personagem {
 	public void ataca(Personagem p) {
 		p.atacado(this);
 		Tabuleiro.getInstance().moverPersonagem(this.getPos(),p.getPos());
+		this.setPos(p.getPos());
 		
 	}
 
