@@ -6,7 +6,6 @@ public class App {
 		Tabuleiro tab = Tabuleiro.getInstance();
 		tab.setTabuleiro(0, 0);
 		
-		System.out.println(tab);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				JanelaPrincipal.getInstance();

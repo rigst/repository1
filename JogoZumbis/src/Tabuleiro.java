@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Tabuleiro extends Observable{
 	private Personagem[][] tab;
 	private ArrayList<Personagem> lista;
-	private final static int TAM = 5;
+	private final static int TAM = 6;
 	private final static int NUM_TIPOS_PERSONA = 4;
 	private int numJogada;
 	private int numHumanos, numZumbis;
@@ -75,7 +75,7 @@ public class Tabuleiro extends Observable{
 				x = Math.abs(r.nextInt()) % TAM;
 				y = Math.abs(r.nextInt()) % TAM;
 				escolha = Math.abs(r.nextInt() % NUM_TIPOS_PERSONA) + 1;
-	System.out.println("X : " + x + " Y : " + y + " escolha : " + escolha );
+	//System.out.println("X : " + x + " Y : " + y + " escolha : " + escolha );
 				if(!ocupado(x,y)) { 
 					if((escolha == 1 || escolha == 3) && numHumanos == 0) escolha = 2;
 					else if((escolha == 2 || escolha == 4) && numZumbis == 0) escolha = 1;
@@ -161,10 +161,10 @@ public class Tabuleiro extends Observable{
 		for(int j = 0; j<qnt; j++){ // recebe a quantidade de jogada 
 			for (int i=0;i<lista.size();i++) {
 				Personagem p= lista.get(i);
-				System.out.println("Vai mover o personagem:"+p);
+				//System.out.println("Vai mover o personagem:"+p);
 				Posicao pos = p.getPos();
 				p.avancaJogada();
-				System.out.println("Moveu de:"+pos+" para "+p.getPos());
+				//System.out.println("Moveu de:"+pos+" para "+p.getPos());
 			}
 		}
 		numJogada += qnt;

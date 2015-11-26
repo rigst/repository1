@@ -122,7 +122,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	public void botaoAvancaJogada(JButton b, JTextField c){  // botao avanca, um metodo pra ficar mais claro
 		b.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){  // quando eu chamo o botao avancar
-                System.out.println("Avanca jogada"); 
+                //System.out.println("Avanca jogada"); 
                 if(c.getText().equals("")&& Tabuleiro.getInstance().getNumeroHumanos() != 0){ // cai nesse if se o JTextField estiver em branco
             				JOptionPane.showMessageDialog(getParent(), "Campos não podem estar em branco!","Mensagem",0);
                 }
@@ -137,7 +137,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
                 	JOptionPane.showMessageDialog(getParent(), "Valor Inválido!","Mensagem",0);
                 	return;
                 }
-                System.out.println("Numero de passos: "+passos);
+                //System.out.println("Numero de passos: "+passos);
 				Tabuleiro.getInstance().avancaJogada(passos); }// recebe o numero de passos digitado no textField
                 //c.setText(null);
 
@@ -161,7 +161,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	public void botaoIniciar(JButton b, JTextField c, JTextField d){  // botao avanca, um metodo pra ficar mais claro
 		b.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){  // quando eu chamo o botao avancar
-                System.out.println("Avanca jogada"); 
+               // System.out.println("Avanca jogada"); 
                 if(c.getText().equals("") || d.getText().equals("")){ // cai nesse if se o JTextField estiver em branco
             				JOptionPane.showMessageDialog(getParent(), "Nenhum campo pode ficar em branco!","Mensagem",0);
                 }
@@ -173,8 +173,8 @@ public class JanelaPrincipal extends JFrame implements Observer{
                 		return;
                 	}        
                 	
-                	System.out.println("Numero de Zumbi: "+numZumbi);
-                	System.out.println("Numero de Humanos: "+numHumanos);
+                	//System.out.println("Numero de Zumbi: "+numZumbi);
+                	//System.out.println("Numero de Humanos: "+numHumanos);
                 	Tabuleiro.getInstance().setTabuleiro(numHumanos, numZumbi);
                 }
 			} 
@@ -336,8 +336,8 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-        System.out.println("*********");
-		System.out.println(Tabuleiro.getInstance());
+        //System.out.println("*********");
+		//System.out.println(Tabuleiro.getInstance());
 		if(o instanceof Tabuleiro){
 			limpaTabuleiro();
 			List<Personagem> lp = Tabuleiro.getInstance().getLista();
