@@ -4,27 +4,62 @@ import java.util.Random;
 public abstract class Personagem {
 	public enum DIRECAO{ N,S,L,O,NE,NO,SO,SE}
 	
-	private boolean vivo = true;
-	private DIRECAO direcao;
-	private Posicao pos;
-	private Posicao posAnterior;
+	private /*@ spec_public @*/ boolean vivo = true;
+	private /*@ spec_public @*/ DIRECAO direcao;
 	
-	public abstract boolean mesmoTipo(Personagem p);
-	public abstract void ataca(Personagem p);
-	public abstract void atacado(Personagem p);
+	/*@ invariant (0 <= pos.getX() && pos.getX() < Tabuleiro.getInstance().getSize()) 
+					&& (0 <= pos.getY() && pos.getY() < Tabuleiro.getInstance().getSize());
+	@*/
+	private /*@ spec_public @*/ Posicao pos;
+		
+	public /*@ pure @*/ abstract boolean mesmoTipo(Personagem p);
+	
+	/*@
+	 		requires p != null;
+	 		assignable pos;
+	 	also
+	 		requires this instanceof Humano && p instanceof Zumbi;
+	 	also
+	 		requires this instanceof Humano && p instanceof Zumbi;
+	 @*/
+	public abstract void ataca(Personagem p); //RECEBE PERSONAGEM A ATACAR
+	
+	/*@
+	  		requires p != null;
+	  		assignable vivo;
+	  	also
+	  		requires (p instanceof Humano);
+	  		ensures Tabuleiro.getInstance().getNumeroHumanos() == \old(Tabuleiro.getInstance().getNumeroHumanos())-1;
+	  	also		
+	 		requires (p instanceof Zumbi);
+	  		ensures Tabuleiro.getInstance().getNumeroZumbis() == \old(Tabuleiro.getInstance().getNumeroZumbis())-1;
+	 @*/
+	public void atacado(Personagem p){	//RECEBE PERSONAGEM QUE O ATACOU
+		setVivo(false);
+		Tabuleiro.getInstance().deletaPersonagem(this);
+	}
 
-	public Posicao getPosAnterior() { return posAnterior; }
-	public void setPosAnterior(Posicao p) { posAnterior = p;}
-	
-	public Posicao getPos() { return pos; }
+	//@ \result == pos;
+	public /*@ pure @*/ Posicao getPos() { return pos; }
+	/*@ assignable pos;
+		ensures p == getPos();
+	@*/
 	public void setPos(Posicao p) { pos = p;} 
 	
-	public boolean getVivo() { return vivo;} 
+	//@ \result == vivo;
+	public /*@ pure @*/ boolean getVivo() { return vivo;} 
+	/*@ assignable vivo;
+		ensures b == getVivo();
+	@*/
 	public void setVivo(boolean b) { vivo = b; } 
 	
-	public DIRECAO getDirecao() { return direcao; }
+	//@ \result == direcao;
+	public /*@ pure @*/ DIRECAO getDirecao() { return direcao; }
+	/*@ assignable direcao;
+		ensures dir == getDirecao();
+	@*/
 	public void setDirecao(DIRECAO dir) { direcao = dir; }
-	public static DIRECAO sorteiaDirecao(){
+	public static /*@ pure @*/ DIRECAO sorteiaDirecao(){
 		Random r = new Random();
 		int numDirecao = r.nextInt() % 8;
 		switch(numDirecao){
@@ -40,8 +75,30 @@ public abstract class Personagem {
 		}		
 	}
 	
-	public abstract void avancaJogada();
+	/*@ 
+	 	assignable pos;
+		assignable direcao;
+	@*/
+	public void avancaJogada() {
+		if(!Tabuleiro.getInstance().existePosVaziaAoRedor(this.getPos())) return; //se não tem para onde ir
+		
+		Posicao prox = proxPos();
+		if(Tabuleiro.getInstance().ocupado(prox)){
+			Personagem aux = Tabuleiro.getInstance().getPersonagem(prox);
+			if(!mesmoTipo(aux)){ //ATACA 
+				ataca(aux);
+			}else{
+				setDirecao(sorteiaDirecao());
+				avancaJogada();
+			}
+		}
+		else{
+			Tabuleiro.getInstance().moverPersonagem(this.getPos(),prox);
+			this.setPos(prox);
+		}
+	}
 	
+	//@ assignable direcao;
 	public Posicao proxPos() {
 		int x, y;
 		x = pos.getX(); y = pos.getY();
@@ -63,6 +120,6 @@ public abstract class Personagem {
 		return nova;
 	}
 	
-	public String toString() { return "(" + pos.getX() + "," + pos.getY() + ")";}
+	public /*@ pure @*/ String toString() { return "(" + pos.getX() + "," + pos.getY() + ")";}
 	
 }

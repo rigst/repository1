@@ -13,36 +13,37 @@ import java.util.ArrayList;
 public class Tabuleiro extends Observable{
 	private Personagem[][] tab;
 	private ArrayList<Personagem> lista;
-	private final static int TAM = 15;
-	private final static int NUM_TIPOS_PERSONA = 2;
+	private final static int TAM = 5;
+	private final static int NUM_TIPOS_PERSONA = 4;
 	private int numJogada;
 	private int numHumanos, numZumbis;
+	private GerenciadorPersona gerenciador = GerenciadorPersona.getInstance();
 	
 	private static Tabuleiro tabuleiro = null; 
 	
-	public static Tabuleiro getInstance(){
+	public /*@ helper @*/ static Tabuleiro getInstance(){
 		if(tabuleiro == null) {
 			tabuleiro = new Tabuleiro();
 		}
 		return tabuleiro;
 	}
-	
-	public int getNumeroJogada() { return numJogada;}
-	
-	public int getNumeroHumanos(){
-		return numHumanos;
-	}
-	
-	public int getNumeroZumbis(){
-		return numZumbis;
-	}
-	
+
 	private Tabuleiro(){
 		tab = new Personagem[TAM][TAM];
 		lista = new ArrayList<Personagem>();
 		numHumanos = 0; numZumbis = 0;
 		gravaArquivo("inicio.txt");
 	}
+	
+	public int getNumeroJogada() { return numJogada;}
+	
+	public int getNumeroHumanos(){ return numHumanos; }
+	
+	public int getNumeroZumbis(){ return numZumbis; }
+
+	public void setNumHumanos(int n) { numHumanos = n; }
+	
+	public void setNumZumbis(int n) { numZumbis = n;}
 	
 	public ArrayList<Personagem> getLista() { return lista; }
 	
@@ -52,8 +53,7 @@ public class Tabuleiro extends Observable{
 		tab = mat;
 		gravaArquivo("inicio.txt");
 	}
-	
-	
+		
 	public void setTabuleiro(int numHumanos, int numZumbis){
 		lista.clear();
 		Random r = new Random();
@@ -70,7 +70,6 @@ public class Tabuleiro extends Observable{
 			}
 		}
 		
-		GerenciadorPersona gerenciador = GerenciadorPersona.getInstance();
 		while(numHumanos > 0 || numZumbis > 0){
 			do{
 				x = Math.abs(r.nextInt()) % TAM;
@@ -78,8 +77,8 @@ public class Tabuleiro extends Observable{
 				escolha = Math.abs(r.nextInt() % NUM_TIPOS_PERSONA) + 1;
 	System.out.println("X : " + x + " Y : " + y + " escolha : " + escolha );
 				if(!ocupado(x,y)) { 
-					if(escolha == 1 && numHumanos == 0) escolha = 2;
-					else if(escolha == 2 && numZumbis == 0) escolha = 1;
+					if((escolha == 1 || escolha == 3) && numHumanos == 0) escolha = 2;
+					else if((escolha == 2 || escolha == 4) && numZumbis == 0) escolha = 1;
 					
 					Personagem p = gerenciador.createInstance(escolha,new Posicao(x,y)); 
 					tab[x][y] = p; 
@@ -96,10 +95,19 @@ public class Tabuleiro extends Observable{
 		setChanged();
 		notifyObservers();
 	}
-
-	public void setNumHumanos(int n) { numHumanos = n; }
 	
-	public void setNumZumbis(int n) { numZumbis = n;}
+	public void criaPersona(int i, Posicao pos){
+		int x = pos.getX(), y = pos.getY();
+		Personagem p = gerenciador.createInstance(i, pos);
+		
+		tab[x][y] = p; 
+		lista.add(p);
+		if(p instanceof Humano) numHumanos++;
+		else numZumbis++;
+		
+		setChanged();
+	}
+
 	
 	public boolean existePosicao(Posicao p){
 		int x = p.getX(), y = p.getY();
@@ -119,13 +127,20 @@ public class Tabuleiro extends Observable{
 		return false;
 	}
 	
-	public Personagem getPersonagem(Posicao p){
-		return tab[p.getX()][p.getY()];
-	}
-
+	public Personagem getPersonagem(Posicao p){ return tab[p.getX()][p.getY()]; }
+	
 	public void moverPersonagem(Posicao posInicial, Posicao posFinal){
 		tab[posFinal.getX()][posFinal.getY()] = tab[posInicial.getX()][posInicial.getY()];
 		tab[posInicial.getX()][posInicial.getY()] = null;			
+	}
+	
+	public boolean existePosVaziaAoRedor(Posicao p){
+		int x = p.getX(), y = p.getY();
+		
+		for(int i=-1; i<=1; i++)
+			for(int j=-1; j<=1; j++)
+				if(existePosicao(new Posicao(x+i, y+j)) && tab[x+i][y+j] == null) return true;
+		return false;
 	}
 	
 	public void deletaPersonagem(Personagem p){
@@ -135,7 +150,7 @@ public class Tabuleiro extends Observable{
 		
 		else if(p instanceof Zumbi){
 			numZumbis--;
-			}
+		}
 		Posicao pos = p.getPos();
 		lista.remove(tab[pos.getX()][pos.getY()]);
 		
@@ -147,9 +162,9 @@ public class Tabuleiro extends Observable{
 			for (int i=0;i<lista.size();i++) {
 				Personagem p= lista.get(i);
 				System.out.println("Vai mover o personagem:"+p);
-				p.setPosAnterior(p.getPos());
+				Posicao pos = p.getPos();
 				p.avancaJogada();
-				System.out.println("Moveu de:"+p.getPosAnterior()+" para "+p.getPos());
+				System.out.println("Moveu de:"+pos+" para "+p.getPos());
 			}
 		}
 		numJogada += qnt;
@@ -173,7 +188,9 @@ public class Tabuleiro extends Observable{
 				int posY = Integer.parseInt("" + line.charAt(4));
 				
 				Personagem persona;
-				if(tipo == 'H'){ persona = GerenciadorPersona.getInstance().createInstance(1,new Posicao(posX,posY)); nH++;}
+				if(tipo == 'S'){ persona = GerenciadorPersona.getInstance().createInstance(3,new Posicao(posX,posY)); nH++;}
+				else if(tipo == 'C'){ persona = GerenciadorPersona.getInstance().createInstance(4,new Posicao(posX,posY)); nH++;}
+				else if(tipo == 'H'){ persona = GerenciadorPersona.getInstance().createInstance(1,new Posicao(posX,posY)); nH++;}
 				else { persona = GerenciadorPersona.getInstance().createInstance(2,new Posicao(posX,posY)); nZ++; }
 				
 				aux[posX][posY] = persona;
@@ -202,14 +219,20 @@ public class Tabuleiro extends Observable{
 			for(int i = 0; i <tab.length;i++){ // percorre o tab
 				for(int j=0;j<tab.length;j++){
 					if(tab[i][j] == null) continue;  // se encontrar posicoes vazias continua......
-
+					char aux;
 					p = tab[i][j]; // guarda o personagem da posicao
-					if(p instanceof Humano){ // verifica qual personagem é....
-						char hum = 'H'; // variavel criada pra humano
-						writer.format("%s,%s,%s%n",hum,p.getPos().getX(), p.getPos().getY()); } // escreve no arquivo H e linha + coluna
+					if(p instanceof Soldado){ // verifica qual personagem é....
+						aux = 'S'; // variavel criada pra humano
+						writer.format("%s,%s,%s%n",aux,p.getPos().getX(), p.getPos().getY()); } // escreve no arquivo H e linha + coluna
+					else if(p instanceof Cachorro){ // verifica qual personagem é....
+						aux = 'C'; // variavel criada pra humano
+						writer.format("%s,%s,%s%n",aux,p.getPos().getX(), p.getPos().getY()); } // escreve no arquivo H e linha + coluna		
+					else if(p instanceof Humano){ // verifica qual personagem é....
+						aux = 'H'; // variavel criada pra humano
+						writer.format("%s,%s,%s%n",aux,p.getPos().getX(), p.getPos().getY()); } // escreve no arquivo H e linha + coluna
 					else{
-						char zum = 'Z';
-						writer.format("%s,%s,%s%n",zum,p.getPos().getX(), p.getPos().getY());  // // escreve no arquivo Z e linha + coluna
+						aux = 'Z';
+						writer.format("%s,%s,%s%n",aux,p.getPos().getX(), p.getPos().getY());  // // escreve no arquivo Z e linha + coluna
 					}
 				}
 			}

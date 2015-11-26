@@ -47,7 +47,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setTitle("Simulador Zumbi");
 		
-		setResizable(false);
+		setResizable(true);
 		setLocationRelativeTo(null);
 				
 		//Painel Principal
@@ -168,7 +168,7 @@ public class JanelaPrincipal extends JFrame implements Observer{
                 else {
                 	int numHumanos = setJtextField(c);  // o valor do JTextField e capturado e colocado em uma variavel
                 	int numZumbi = setJtextField(d);  // o valor do JTextField e capturado e colocado em uma variavel
-                	if(numHumanos == -1 || numZumbi == -1){
+                	if(numHumanos == -1 || numZumbi == -1 || numHumanos + numZumbi > Math.pow(Tabuleiro.getInstance().getSize(),2)){
                 		JOptionPane.showMessageDialog(getParent(), "Valor Inválido!","Mensagem",0);
                 		return;
                 	}        
@@ -176,9 +176,6 @@ public class JanelaPrincipal extends JFrame implements Observer{
                 	System.out.println("Numero de Zumbi: "+numZumbi);
                 	System.out.println("Numero de Humanos: "+numHumanos);
                 	Tabuleiro.getInstance().setTabuleiro(numHumanos, numZumbi);
-				 
-                	c.setText(null);
-                	d.setText(null);
                 }
 			} 
 		});
@@ -253,14 +250,16 @@ public class JanelaPrincipal extends JFrame implements Observer{
 		desenhaTabuleiro(pnGeral);
 		return pnGeral;
 	}
-	
-	private ImageIcon humano = new ImageIcon(System.getProperty("user.dir")
-			+ "/Images/soldier.jpg");
-	
+
 	private ImageIcon grama = new ImageIcon(System.getProperty("user.dir")
 			+ "/Images/grama.jpg");
-	
+	private ImageIcon humano = new ImageIcon(System.getProperty("user.dir")
+			+ "/Images/humano2.jpg");	
 	private ImageIcon zumbi = new ImageIcon(System.getProperty("user.dir")
+			+ "/Images/zumbi2.jpg");
+	private ImageIcon soldado = new ImageIcon(System.getProperty("user.dir")
+			+ "/Images/soldier.jpg");
+	private ImageIcon cachorro = new ImageIcon(System.getProperty("user.dir")
 			+ "/Images/dog.jpg");
 	
 	private void desenhaTabuleiro(JPanel pnTabGeral) {
@@ -274,6 +273,12 @@ public class JanelaPrincipal extends JFrame implements Observer{
 				tabuleiro[y][x] = new JPanel();
 				if(persona == null) {
 					tabuleiro[y][x].add(new JLabel(this.grama));
+				}
+				else if(persona instanceof Soldado){
+					tabuleiro[y][x].add(new JLabel(this.soldado));
+				}
+				else if(persona instanceof Cachorro){
+					tabuleiro[y][x].add(new JLabel(this.cachorro));
 				}
 				else if(persona instanceof Humano){
 					tabuleiro[y][x].add(new JLabel(this.humano));
@@ -295,14 +300,14 @@ public class JanelaPrincipal extends JFrame implements Observer{
 	}
 	
 	public void atualizaPos(Posicao pos, Personagem p){
-		JLabel img = null;
 		int y = pos.getX(), x = pos.getY();
 		
 		tabuleiro[y][x].removeAll();
 		
-		if(p == null) tabuleiro[y][x].add(new JLabel(grama)); 
-		else if(p instanceof Humano) 
-			tabuleiro[y][x].add(new JLabel(humano));
+		if(p == null) tabuleiro[y][x].add(new JLabel(grama));
+		else if (p instanceof Soldado) tabuleiro[y][x].add(new JLabel(soldado));
+		else if(p instanceof Cachorro) tabuleiro[y][x].add(new JLabel(cachorro));
+		else if(p instanceof Humano) tabuleiro[y][x].add(new JLabel(humano));
 		else if (p instanceof Zumbi) tabuleiro[y][x].add(new JLabel(zumbi));
 		
 		tabuleiro[y][x].validate();	
