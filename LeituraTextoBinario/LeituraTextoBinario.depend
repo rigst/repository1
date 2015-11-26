@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1448535178 source:/home/PORTOALEGRE/15105188/DriveH/workspace/repository1/LeituraTextoBinario/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

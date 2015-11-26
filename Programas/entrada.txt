@@ -1,0 +1,1 @@
+No exemplo abaixo, o operador + é sobrecarregado através de uma função, para operar sobre dois objetos da classe PONTO. O tipo do retorno da função deve corresponder ao tipo de dados a ser gerado pela operação. O tipo deste retorno pode ser inclusive void, caso o operador nada retorne.

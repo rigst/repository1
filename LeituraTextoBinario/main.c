@@ -3,7 +3,7 @@
 #include <string.h>
 //xxd -b ArqBinario.dat
 
-/****STRUCTS******/
+/**********STRUCTS*******/
 typedef struct Temp{
     char *pal;
     struct Temp *prox;
@@ -18,6 +18,7 @@ TNODO *ListaDePalavras = NULL;
 TREF *TextoComoListaDePalavras = NULL;
 
 int const TAM_MAX_PAL = 20;
+
 
 /****LISTA DE PALAVRAS******/
 void CriaLista();
@@ -34,10 +35,10 @@ TREF *InsereRef(TNODO *palavra);
 void ImprimeTexto();
 int TamanhoTexto();
 /**********ARQUIVO*******/
-void LeArquivoTexto(char *arqTxt);
-void GravaArquivoBinario();
-void GravaBinarioLista(FILE *arq);
-void GravaBinarioTexto(FILE *arq);
+void LeArquivoBinario(char* nomeArq);
+void LeBinarioListaPal(int tamListaPal, FILE *arq);
+void LeBinarioTexto(int tamTexto, FILE *arq);
+
 
 /*****************LISTA DE PALAVRAS**********************/
 void CriaLista()
@@ -178,102 +179,81 @@ int TamanhoTexto()
     return cont;
 }
 
-/*******************ARQUIVO TEXTO***********************/
-void LeArquivoTexto(char *arqTxt)
-{
-    FILE *arq;
-    arq = fopen(arqTxt, "rt");
-    if (arq == NULL){ perror("Error"); return;}
-    else printf("Lendo texto do arquivo \"%s\"\n",arqTxt);
-
-    int result = 0;
-    while(result != EOF)
-    {
-        char *s = (char*) malloc(sizeof(char)*50);
-        result = fscanf(arq, "%s", s);
-
-        if((int)s[0] == 0) continue;
-        else if(!ExisteDadoListaPalavras(s)) ListaDePalavras = Insere(s);
-
-        TNODO *palavra = BuscaDadoListaPalavras(s);
-        TextoComoListaDePalavras = InsereRef(palavra);
-    }
-    fclose(arq);
-}
-
-/*******************ARQUIVO SALVA BINÁRIO***********************/
-void GravaArquivoBinario()
+/*******************ARQUIVO LÊ BINÁRIO***********************/
+void LeArquivoBinario(char* nomeArq)
 {
     FILE *arq;
     int result;
+    arq = fopen(nomeArq, "rb");
 
-    arq = fopen("ArqBinario.dat", "wb");
-    if (arq == NULL) { printf("\nProblemas na CRIACAO do arquivo\n"); return; }
+    if (arq == NULL) { printf("Problemas na abertura do arquivo\n"); return;}
 
-    int tamListaPal = TamanhoLista(), tamTexto = TamanhoTexto();
-    int *ptrLista = &tamListaPal, *ptrTexto = &tamTexto;
-    result = fwrite(ptrLista, sizeof(int), 1, arq);
-    result += fwrite(ptrTexto, sizeof(int), 1, arq);
-printf("GRAVAÇÃO\nGravou Tamanho Lista : %d\t Tamanho Texto : %d\n", tamListaPal,tamTexto);
+    int tamListaPal = 0, tamTexto = 0;
+    result = fread (&tamListaPal, sizeof(int), 1, arq);
+printf("\nLEITURA\nTam lista de palavras : %d\n", tamListaPal);
+    result += fread (&tamTexto, sizeof(int), 1, arq);
+printf("Tam texto : %d\n", tamTexto);
 
-    GravaBinarioLista(arq);
-    GravaBinarioTexto(arq);
-
+    LeBinarioListaPal(tamListaPal,arq);
+Imprime();
+    LeBinarioTexto(tamTexto,arq);
+ImprimeTexto();
     fclose(arq);
 }
 
-void GravaBinarioLista(FILE *arq)
+void LeBinarioListaPal(int tamListaPal, FILE *arq)
 {
-    int tamPal = 0;
-    char fimPal = '@';
-    char *ptrFimPal = &fimPal;
-    TNODO *aux = ListaDePalavras;
-    while(aux != NULL)
+    CriaLista();
+    while(tamListaPal > 0)
     {
-printf("Gravou Palavra : %s\n", aux->pal);
-        tamPal = strlen(aux->pal);
-        fwrite(aux->pal, sizeof(char)*tamPal,1, arq);
-printf("Gravou termino\n");
-        fwrite(ptrFimPal, sizeof(char), 1, arq);
-        aux = aux->prox;
+        char* palAtual = (char*) malloc (sizeof(char)*TAM_MAX_PAL);
+        char* aux = (char*) malloc (sizeof(char));
+        fread(aux, sizeof(char),1,arq);
+        while(strcmp(aux,"@") != 0){
+printf("Pegou char : %s\n", aux);
+            strcat(palAtual,aux);
+            fread(aux, sizeof(char),1,arq);
+printf("Concatenou em palAtual : %s\n", palAtual);
+        }
+        printf("Inseriu na lista : %s\n", palAtual);
+        ListaDePalavras = Insere(palAtual);
+        palAtual = (char*) malloc (sizeof(char)*TAM_MAX_PAL);
+        tamListaPal--;
     }
 }
 
-void GravaBinarioTexto(FILE *arq)
+void LeBinarioTexto(int tamTexto, FILE *arq)
 {
-    int posPal = 0;
-    int *ptrPosPal = &posPal;
-    TREF *aux = TextoComoListaDePalavras;
-    while(aux != NULL)
+printf("\nLeitura do texto\n");
+    CriaTexto();
+    int i;
+    int posPalavraLista = 0;
+    for(i=0; i<tamTexto; i++)
     {
-        char *pal = aux->refPal->pal;
-printf("Palavra atual : %s\n", aux->refPal->pal);
-        posPal = posPalavra(pal);
-printf("Gravou Posicao : %d\n", posPal);
-        fwrite(ptrPosPal, sizeof(int), 1, arq);
-        aux = aux->prox;
+        TNODO* pal = NULL;
+        fread(&posPalavraLista, sizeof(int),1,arq);
+        pal = BuscaDadoListaPalavrasPos(posPalavraLista);
+printf("Posicao: %d\nPalavra : %s\n", posPalavraLista, pal->pal);
+        TextoComoListaDePalavras = InsereRef(pal);
     }
-
 }
 
 /************************MAIN*********************************/
 int main()
 {
-    printf("COMPACTAÇÃO DO TEXTO\n");
-    printf("Digite o nome do arquivo contendo o texto: ");
-    char *arqTxt = (char*) malloc (sizeof(char)*50);
-    scanf("%s",arqTxt);
+    printf("LEITURA DO TEXTO COMPACTADO\n");
+    printf("Digite o nome do arquivo binario contendo o texto: ");
+    char *arqBin = (char*) malloc (sizeof(char)*50);
+    scanf("%s",arqBin);
 
-    LeArquivoTexto(arqTxt);
+    LeArquivoBinario(arqBin);
+
     printf("\nLISTA DE PALAVRAS:\n");
     Imprime(ListaDePalavras);
     printf("Tamanho Lista: %d\n", TamanhoLista());
     printf("\nTEXTO:\n");
     ImprimeTexto(TextoComoListaDePalavras);
     printf("Tamanho Texto: %d\n\n", TamanhoTexto());
-
-
-    GravaArquivoBinario();
 
     printf("FIM!");
     getchar();
