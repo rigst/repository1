@@ -1,0 +1,35 @@
+1) Executar "Apocaolipse.jar" na linha de comando: $ java -jar Apocaolipse.jar.
+
+2) Escrever no canto inferior direito a quantidade de humanos e zumbis desejada,
+nenhum deles deve ser menor do que 1 ou sua soma maior que 36.
+
+3) Clicar em "Iniciar" e uma nova simulação começará. Um número aleatório de cada
+tipo será criado, de acordo com os limites escritos para humanos e zumbis. Os tipos
+são:
+
+3.1) Humanos : Humano, Soldado;
+3.2) Zumbis : Zumbi, Cão Zumbi;
+
+4) Digite o número desejado de passos a avançar no menu inferior esquerdo e clique
+no botão "Avançar".
+
+5) Todos os personagens caminham aleatoreamente, uma casa por vez. Um personagem 
+é atacado quando outro deseja mover para a posição na qual ele se encontra.
+
+5.1) Humanos: Não atacam, apenas caminham.
+5.2) Soldados: Todos os zumbis a um quadrado de distância desse personagem são mortos.
+5.3) Zumbi: Persegue humanos e soldados a um quadrado de distância. Quando ataca, o
+humano ou soldado morre.
+5.4) Cão Zumbi: Persegue humanos e soldados a um quadrado de distância. Quando ataca,
+no lugar do humano ou soldado surge um novo Zumbi.
+
+6) Clique em "Salvar" no menu superior para gravar a simulação.
+
+7) Clique em "Carregar" no menu superior para carregar a última simulação salva.
+
+8) Clique em "Recuperar" para voltar ao passo inicial da simulação atual.
+
+9) Clique no botão "História" para entender o contexto da simulação.
+
+10) Você pode acompanhar no gráfico o número total de humanos e de zumbis a medida
+que a simulação avança.
